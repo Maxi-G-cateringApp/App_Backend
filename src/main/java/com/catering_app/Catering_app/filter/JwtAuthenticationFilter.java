@@ -1,6 +1,7 @@
 package com.catering_app.Catering_app.filter;
 
-import com.catering_app.Catering_app.service.JwtService;
+import com.catering_app.Catering_app.service.jwtService.JwtService;
+import com.catering_app.Catering_app.service.jwtService.JwtServiceImpl;
 import com.catering_app.Catering_app.service.UserDetailsServiceImpl;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -22,7 +23,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtService jwtService;
     private final UserDetailsServiceImpl userDetailsService;
 
-    public JwtAuthenticationFilter(JwtService jwtService, UserDetailsServiceImpl userDetailsService) {
+    public JwtAuthenticationFilter(JwtServiceImpl jwtService, UserDetailsServiceImpl userDetailsService) {
         this.jwtService = jwtService;
         this.userDetailsService = userDetailsService;
     }

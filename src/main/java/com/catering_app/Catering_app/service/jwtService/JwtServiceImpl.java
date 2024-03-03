@@ -1,4 +1,4 @@
-package com.catering_app.Catering_app.service;
+package com.catering_app.Catering_app.service.jwtService;
 
 import com.catering_app.Catering_app.model.User;
 import io.jsonwebtoken.Claims;
@@ -13,7 +13,7 @@ import java.util.Date;
 import java.util.function.Function;
 
 @Service
-public class JwtService {
+public class JwtServiceImpl implements JwtService{
     private static final String SECRET_KEY = "37e5c15e00d8c9631e1daf45d6c2eaf54bd36d54e5cb33b488aced19823592e2";
 
 
