@@ -11,3 +11,24 @@ spring:
         format_sql: 'true'
     hibernate:
       ddl-auto: update
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: "90397812949-veoi3ftf4he937mkvtkg8dc897suo0cq.apps.googleusercontent.com"
+            client_secret: "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"
+            scope:
+
+
+  mail:
+    properties:
+      mail:
+        smtp:
+          starttls:
+            enable: 'true'
+          auth: 'true'
+    host: smtp.gmail.com
+    username: sreekanthv1995@gmail.com
+    password: swysorteaomozkar
+    port: '587'
