@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class VerificationResponseDto {
+public class ResponseDto {
 
     private boolean status;
     private String message;
