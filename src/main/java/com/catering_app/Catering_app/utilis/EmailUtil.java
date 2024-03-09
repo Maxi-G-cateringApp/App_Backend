@@ -11,8 +11,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class EmailUtil {
 
-//    @Autowired
-//    private JavaMailSender javaMailSender;
+    @Autowired
+    private JavaMailSender javaMailSender;
 
 
     public void sentOtpEmail(String email, String otp) throws MessagingException {
@@ -21,22 +21,18 @@ public class EmailUtil {
         simpleMailMessage.setSubject("Verify OTP");
         simpleMailMessage.setText("Hello , your OTP is "+otp);
 
-//        MimeMessage mimeMessage = javaMailSender.createMimeMessage();
-//        MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage,true);
-//        mimeMessageHelper.setTo(email);
-//        mimeMessageHelper.setSubject("Verify OTP");
-//        String emailContent = """
-//        <div>
-//            <p>Hello,Welcome to techHUB.com</p>
-//            <p>Your OTP for verification is: %s</p>
-//            <p>Please use the following link to verify your account:</p>
-//            <p><a href="https://localhost8080/verify-account?email=%s&otp=%s" target="blank">Click here to verify</a></p>
-//            <p>Thank you!</p>
-//        </div>
-//        """.formatted(otp, email, otp);
-//        mimeMessageHelper.setText(emailContent,true);
-//        javaMailSender.send(mimeMessage);
-
-//        javaMailSender.send(mimeMessage);
+        MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+        MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage,true);
+        mimeMessageHelper.setTo(email);
+        mimeMessageHelper.setSubject("Verify OTP");
+        String emailContent = """
+        <div>
+            <p>Hello,Welcome to Maxi-G</p>
+            <p>Your OTP for verification is: %s</p>
+            <p>Thank you!</p>
+        </div>
+        """.formatted(otp);
+        mimeMessageHelper.setText(emailContent,true);
+        javaMailSender.send(mimeMessage);
     }
 }

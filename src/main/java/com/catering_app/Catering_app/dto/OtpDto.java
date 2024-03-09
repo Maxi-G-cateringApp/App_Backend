@@ -6,6 +6,6 @@ import lombok.Data;
 public class OtpDto {
 
 
-    String email;
-    String otp;
+    private String email;
+    private String otp;
 }

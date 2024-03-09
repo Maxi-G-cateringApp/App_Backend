@@ -45,24 +45,25 @@ public class AuthenticationServiceImpl implements AuthenticationService{
 
     public User register(UserRegisterDto registrationRequest) throws MessagingException {
 
-        User user = new User();
-
-
-            user.setFirstName(registrationRequest.getFirstName());
-            user.setLastName(registrationRequest.getLastName());
-            user.setUsername(registrationRequest.getUsername());
-            user.setPhoneNumber(registrationRequest.getPhoneNumber());
-            user.setEmail(registrationRequest.getEmail());
-            user.setPassword(passwordEncoder.encode(registrationRequest.getPassword()));
-            user.setRole(Role.USER);
-            String verificationOtp = otpUtils.generateOtp();
+        User user = createNewUser(registrationRequest);
+        String verificationOtp = otpUtils.generateOtp();
             emailUtil.sentOtpEmail(registrationRequest.getEmail(),verificationOtp);
             user.setOtp(verificationOtp);
             user.setOtpGeneratedDateTime(LocalDateTime.now());
-
-
             return userRepository.save(user);
 
+    }
+
+    private User createNewUser(UserRegisterDto registrationRequest) {
+        User user = new User();
+        user.setFirstName(registrationRequest.getFirstName());
+        user.setLastName(registrationRequest.getLastName());
+        user.setUsername(registrationRequest.getUsername());
+        user.setPhoneNumber(registrationRequest.getPhoneNumber());
+        user.setEmail(registrationRequest.getEmail());
+        user.setPassword(passwordEncoder.encode(registrationRequest.getPassword()));
+        user.setRole(Role.USER);
+        return user;
     }
 
     public AuthenticationResponse authenticate(UserLoginDto userRequest){
@@ -93,8 +94,8 @@ public class AuthenticationServiceImpl implements AuthenticationService{
 
     @Override
     public String regenerateOtp(String email, String otp) throws MessagingException {
-        User user = userRepository.findByEmail(email).orElseThrow(()->new RuntimeException("user not found"));
-
+        User user = userRepository.findByEmail(email).orElseThrow(()->
+                new RuntimeException("user not found"));
         String reOtp = otpUtils.generateOtp();
         emailUtil.sentOtpEmail(email,otp);
         user.setOtp(reOtp);
