@@ -1,26 +1,31 @@
 package com.catering_app.Catering_app.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Table(name="user")
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class User implements UserDetails {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "user_id")
-    private Integer id;
-    private String firstName;
-    private String lastName;
+    private UUID id;
+
     private String username;
     private String phoneNumber;
     private String email;
@@ -30,6 +35,7 @@ public class User implements UserDetails {
     String otp;
     private LocalDateTime otpGeneratedDateTime;
     private boolean active;
+    private LocalDateTime registerDateTime;
 
 
     @Override

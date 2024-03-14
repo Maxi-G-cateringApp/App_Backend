@@ -15,4 +15,5 @@ public class FoodItemCombos {
     private String foodComboName;
     private String description;
     private Float comboPrice;
+//    private Categories categories;
 }

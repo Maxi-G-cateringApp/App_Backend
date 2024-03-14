@@ -15,11 +15,15 @@ import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 @Service
 public class AuthenticationServiceImpl implements AuthenticationService{
@@ -56,13 +60,12 @@ public class AuthenticationServiceImpl implements AuthenticationService{
 
     private User createNewUser(UserRegisterDto registrationRequest) {
         User user = new User();
-        user.setFirstName(registrationRequest.getFirstName());
-        user.setLastName(registrationRequest.getLastName());
         user.setUsername(registrationRequest.getUsername());
         user.setPhoneNumber(registrationRequest.getPhoneNumber());
         user.setEmail(registrationRequest.getEmail());
         user.setPassword(passwordEncoder.encode(registrationRequest.getPassword()));
         user.setRole(Role.USER);
+        user.setRegisterDateTime(LocalDateTime.now());
         return user;
     }
 
@@ -103,4 +106,19 @@ public class AuthenticationServiceImpl implements AuthenticationService{
         return "Resent";
     }
 
+    @Service
+    public static class UserDetailsServiceImpl implements UserDetailsService {
+
+        private final UserRepository userRepository;
+
+        public UserDetailsServiceImpl(UserRepository userRepository) {
+            this.userRepository = userRepository;
+        }
+
+        @Override
+        public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+            return userRepository.findByUsername(username)
+                    .orElseThrow(()->new UsernameNotFoundException("User Not Found"));
+        }
+    }
 }

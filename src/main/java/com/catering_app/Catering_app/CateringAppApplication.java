@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @SpringBootApplication
@@ -24,8 +25,6 @@ public class CateringAppApplication implements CommandLineRunner {
 		User admin = userRepository.findByRole(Role.ADMIN);
 		if (admin == null){
 			User user = new User();
-			user.setFirstName("Maxi");
-			user.setLastName("G");
 			user.setUsername("admin1995");
 			user.setEmail("admin@gmail.com");
 			user.setPassword(new BCryptPasswordEncoder().encode("admin1234"));
