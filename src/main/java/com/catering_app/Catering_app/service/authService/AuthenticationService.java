@@ -11,9 +11,7 @@ public interface AuthenticationService {
 
     public User register(UserRegisterDto registrationRequest) throws MessagingException;
     public AuthenticationResponse authenticate(UserLoginDto userRequest);
-
     boolean verifyAccount(OtpDto otpDto);
-
     String regenerateOtp(String email, String otp) throws MessagingException;
 
 }
