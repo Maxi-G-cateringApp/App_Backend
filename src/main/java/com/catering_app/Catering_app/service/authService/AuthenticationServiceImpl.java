@@ -1,8 +1,6 @@
 package com.catering_app.Catering_app.service.authService;
 
-import com.catering_app.Catering_app.dto.OtpDto;
-import com.catering_app.Catering_app.dto.UserLoginDto;
-import com.catering_app.Catering_app.dto.UserRegisterDto;
+import com.catering_app.Catering_app.dto.*;
 import com.catering_app.Catering_app.model.AuthenticationResponse;
 import com.catering_app.Catering_app.model.Role;
 import com.catering_app.Catering_app.model.User;
@@ -15,15 +13,19 @@ import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.Date;
+import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class AuthenticationServiceImpl implements AuthenticationService{
@@ -32,6 +34,7 @@ public class AuthenticationServiceImpl implements AuthenticationService{
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
+
 
     @Autowired
     OtpUtils otpUtils;
@@ -106,19 +109,11 @@ public class AuthenticationServiceImpl implements AuthenticationService{
         return "Resent";
     }
 
-    @Service
-    public static class UserDetailsServiceImpl implements UserDetailsService {
 
-        private final UserRepository userRepository;
 
-        public UserDetailsServiceImpl(UserRepository userRepository) {
-            this.userRepository = userRepository;
-        }
-
-        @Override
-        public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-            return userRepository.findByUsername(username)
-                    .orElseThrow(()->new UsernameNotFoundException("User Not Found"));
-        }
+    @Override
+    public Optional<User> getUserById(UUID userId) {
+        return userRepository.findById(userId);
     }
+
 }

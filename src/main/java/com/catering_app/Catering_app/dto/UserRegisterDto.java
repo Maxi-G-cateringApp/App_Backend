@@ -12,4 +12,5 @@ public class UserRegisterDto {
     private String email;
     private String password;
     private Role role;
+    private Integer imageId;
 }

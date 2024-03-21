@@ -1,17 +1,22 @@
-package com.catering_app.Catering_app.controller;
+package com.catering_app.Catering_app.controller.authController;
 
-import com.catering_app.Catering_app.dto.OtpDto;
-import com.catering_app.Catering_app.dto.ResponseDto;
-import com.catering_app.Catering_app.dto.UserLoginDto;
-import com.catering_app.Catering_app.dto.UserRegisterDto;
+import com.catering_app.Catering_app.dto.*;
 import com.catering_app.Catering_app.model.AuthenticationResponse;
+import com.catering_app.Catering_app.model.User;
 import com.catering_app.Catering_app.repository.UserRepository;
 import com.catering_app.Catering_app.service.authService.AuthenticationService;
 import com.catering_app.Catering_app.service.authService.AuthenticationServiceImpl;
 import jakarta.mail.MessagingException;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.Optional;
+import java.util.UUID;
 
 @RestController
 @CrossOrigin("http://localhost:4200")
@@ -53,5 +58,17 @@ public class AuthenticationController {
     @PutMapping("/regenerate-otp")
     public ResponseEntity<String> regenerateOtp(@RequestBody OtpDto otpDto) throws MessagingException {
         return ResponseEntity.ok(authenticationService.regenerateOtp(otpDto.getEmail(),otpDto.getOtp()));
+    }
+
+
+    @GetMapping("/get-user")
+    public ResponseEntity<User> getUserById(@RequestParam UUID userId){
+        Optional<User> optionalUser = authenticationService.getUserById(userId);
+        if (optionalUser.isPresent()){
+            User user = optionalUser.get();
+            return ResponseEntity.ok(user);
+        }else {
+            return ResponseEntity.notFound().build();
+        }
     }
 }

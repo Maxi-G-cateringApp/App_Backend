@@ -19,8 +19,6 @@ public class SchedulerServiceImpl implements SchedulerService {
     private UserRepository userRepository;
     private final Duration inactiveTimePeriod = Duration.ofMinutes(3);
 
-
-
     @Override
     @Scheduled(cron = "0 0/3 * * * *")
     public void deleteUnverifiedUser() {

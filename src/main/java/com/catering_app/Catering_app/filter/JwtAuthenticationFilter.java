@@ -1,6 +1,6 @@
 package com.catering_app.Catering_app.filter;
 
-import com.catering_app.Catering_app.service.authService.AuthenticationServiceImpl;
+import com.catering_app.Catering_app.service.authService.UserDetailsServiceImpl;
 import com.catering_app.Catering_app.service.jwtService.JwtService;
 import com.catering_app.Catering_app.service.jwtService.JwtServiceImpl;
 import jakarta.servlet.FilterChain;
@@ -21,11 +21,11 @@ import java.io.IOException;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
-    private final AuthenticationServiceImpl.UserDetailsServiceImpl userDetailsService;
+    private final UserDetailsServiceImpl userDetailsServiceImpl;
 
-    public JwtAuthenticationFilter(JwtServiceImpl jwtService, AuthenticationServiceImpl.UserDetailsServiceImpl userDetailsService) {
+    public JwtAuthenticationFilter(JwtServiceImpl jwtService, UserDetailsServiceImpl userDetailsServiceImpl) {
         this.jwtService = jwtService;
-        this.userDetailsService = userDetailsService;
+        this.userDetailsServiceImpl = userDetailsServiceImpl;
     }
 
     @Override
@@ -44,7 +44,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String username = jwtService.extractUserName(token);
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null){
-            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+            UserDetails userDetails = userDetailsServiceImpl.loadUserByUsername(username);
 
             if (jwtService.isValid(token, userDetails)){
                 UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(

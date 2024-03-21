@@ -1,5 +1,6 @@
 package com.catering_app.Catering_app.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,7 +11,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -36,6 +36,13 @@ public class User implements UserDetails {
     private LocalDateTime otpGeneratedDateTime;
     private boolean active;
     private LocalDateTime registerDateTime;
+
+    @OneToOne
+    @JoinColumn(name = "image_id")
+    @JsonIgnore
+    private UserProfileImage userProfileImage;
+
+
 
 
     @Override
