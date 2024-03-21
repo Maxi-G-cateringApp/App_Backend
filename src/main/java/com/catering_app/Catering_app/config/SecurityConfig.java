@@ -1,7 +1,7 @@
 package com.catering_app.Catering_app.config;
 
 import com.catering_app.Catering_app.filter.JwtAuthenticationFilter;
-import com.catering_app.Catering_app.service.authService.AuthenticationServiceImpl;
+import com.catering_app.Catering_app.service.authService.UserDetailsServiceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -19,11 +19,12 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 public class SecurityConfig {
 
-    private final AuthenticationServiceImpl.UserDetailsServiceImpl userDetailsService;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final UserDetailsServiceImpl userDetailsServiceImpl;
 
-    public SecurityConfig(AuthenticationServiceImpl.UserDetailsServiceImpl userDetailsService, JwtAuthenticationFilter jwtAuthenticationFilter) {
-        this.userDetailsService = userDetailsService;
+    public SecurityConfig(UserDetailsServiceImpl userDetailsServiceImpl,
+                          JwtAuthenticationFilter jwtAuthenticationFilter) {
+        this.userDetailsServiceImpl = userDetailsServiceImpl;
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
     }
 
@@ -39,7 +40,7 @@ public class SecurityConfig {
                                 .anyRequest()
                                 .authenticated()
                 )
-                .userDetailsService(userDetailsService)
+                .userDetailsService(userDetailsServiceImpl)
                 .sessionManagement(session->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();

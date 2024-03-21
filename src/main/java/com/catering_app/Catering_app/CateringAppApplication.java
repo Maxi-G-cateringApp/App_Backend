@@ -11,7 +11,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @SpringBootApplication
-public class CateringAppApplication implements CommandLineRunner {
+public class CateringAppApplication  implements CommandLineRunner{
 	@Autowired
 	private UserRepository userRepository;
 
