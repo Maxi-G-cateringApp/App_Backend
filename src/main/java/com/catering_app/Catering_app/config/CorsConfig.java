@@ -1,10 +1,10 @@
 package com.catering_app.Catering_app.config;
 
-import com.nimbusds.oauth2.sdk.http.HTTPResponse;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
@@ -16,11 +16,9 @@ import java.util.Map;
 
 @Component
 @Order(Ordered.HIGHEST_PRECEDENCE)
-public class CorsConfig implements Filter {
+public class CorsConfig  implements Filter{
 
 
-//    @Value("${app.client.url}")
-//    private String clientAppUrl = "";
     @Override
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws IOException, ServletException {
         HttpServletResponse response = (HttpServletResponse) res;
@@ -39,3 +37,26 @@ public class CorsConfig implements Filter {
         }
     }
 }
+
+
+
+//import org.springframework.context.annotation.Bean;
+//import org.springframework.context.annotation.Configuration;
+//import org.springframework.web.servlet.config.annotation.CorsRegistry;
+//import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+//
+//@Configuration
+//public class WebConfig {
+//
+//    @Bean
+//    public WebMvcConfigurer corsConfig() {
+//        return new WebMvcConfigurer() {
+//            @Override
+//            public void addCorsMappings(@NotNull CorsRegistry registry) {
+//                registry.addMapping("/**")
+//                        .allowedMethods("GET", "POST", "OPTIONS","PUT","DELETE")
+//                        .allowedOrigins("http://localhost:4200");
+//            }
+//        };
+//    }
+//}

@@ -1,7 +1,8 @@
-package com.catering_app.Catering_app.service.foodService;
+package com.catering_app.Catering_app.service.foodService.items;
 
 import com.catering_app.Catering_app.dto.FoodComboDto;
 import com.catering_app.Catering_app.dto.FoodItemDto;
+import com.catering_app.Catering_app.model.FoodItemCombos;
 import com.catering_app.Catering_app.model.Items;
 
 import java.util.List;
@@ -14,6 +15,7 @@ public interface FoodItemService {
 
     void deleteItemById(Integer id);
     Optional<Items> findById(Integer id);
+    List<Items> getItemByCategoryId(Integer id);
 
     boolean editFoodItem(Integer id, FoodItemDto foodItemDto);
 

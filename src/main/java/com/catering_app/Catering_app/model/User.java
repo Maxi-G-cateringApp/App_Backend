@@ -1,8 +1,10 @@
 package com.catering_app.Catering_app.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
@@ -19,14 +21,15 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "user_id")
     private UUID id;
-
-    private String username;
+    private String googleId;
+    private String userName;
     private String phoneNumber;
     private String email;
     private String password;
@@ -34,8 +37,9 @@ public class User implements UserDetails {
     private Role role;
     String otp;
     private LocalDateTime otpGeneratedDateTime;
-    private boolean active;
+    private Boolean active;
     private LocalDateTime registerDateTime;
+    private boolean googleSignIn;
 
     @OneToOne
     @JoinColumn(name = "image_id")
@@ -45,9 +49,16 @@ public class User implements UserDetails {
 
 
 
+
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(role.name()));
+    }
+
+    @Override
+    public String getUsername() {
+        return email;
     }
 
     @Override

@@ -1,18 +1,18 @@
 package com.catering_app.Catering_app.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
 @Entity
 @Table(name = "orders")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class Orders {
@@ -24,14 +24,38 @@ public class Orders {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
+    @JsonManagedReference
     private User user;
 
-    @OneToMany(mappedBy = "order")
-    List<Items> items;
+    @OneToMany(mappedBy = "orders",cascade = CascadeType.ALL)
+    @JsonManagedReference
+    List<OrderedItems> orderedItems = new ArrayList<>();
 
-    @OneToMany(mappedBy = "order")
-    List<FoodItemCombos> foodItemCombos;
+    @OneToMany(mappedBy = "orders",cascade = CascadeType.ALL)
+    @JsonManagedReference
+    List<OrderedCombos> orderedCombos = new ArrayList<>();
 
-    private LocalDate orderDate;
+    @ManyToOne
+    Events events;
+
+    private Date date;
+    private Date orderDate;
+    String timeFrom;
+    String timeTo;
+    private Integer peopleCount;
+
+    private Float totalAmount;
+    private Float advanceAmount;
+    @Enumerated(EnumType.STRING)
+    private Venue venue;
+
+    @OneToOne
+    @JsonManagedReference
+    private UserLocation userLocation;
+    @Enumerated(EnumType.STRING)
+    private Status status;
+    private String decorationOption;
+    private String transactionId;
+
 
 }

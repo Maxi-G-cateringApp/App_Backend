@@ -11,6 +11,5 @@ public class UserProfileImageDto {
     private String name;
     private String type;
     private String filePath;
-
     private UUID userId;
 }

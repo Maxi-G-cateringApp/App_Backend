@@ -6,10 +6,12 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
 import java.util.Date;
+import java.util.Map;
 import java.util.function.Function;
 
 @Service
@@ -25,12 +27,22 @@ public class JwtServiceImpl implements JwtService{
         return resolver.apply(claims);
     }
     public boolean isValid(String token, UserDetails user){
-        String username = extractUserName(token);
-        return (username.equals(user.getUsername())) && !isTokenExpired(token);
+        String email = extractUserName(token);
+        return (email.equals(user.getUsername())) && !isTokenExpired(token);
     }
 
     public boolean isTokenExpired(String token) {
         return extractExpiration(token).before(new Date());
+    }
+
+    @Override
+    public String generateRefreshToken(Map<String, Object> extraClaims, UserDetails userDetails) {
+        return Jwts.builder()
+                .claims(extraClaims).subject(userDetails.getUsername())
+                .issuedAt(new Date(System.currentTimeMillis()))
+                .expiration(new Date(System.currentTimeMillis()+ 60480000))
+                .signWith(getSignInKey())
+                .compact();
     }
 
     private Date extractExpiration(String token) {
@@ -47,7 +59,7 @@ public class JwtServiceImpl implements JwtService{
     }
     public String generateToken(User user){
         return Jwts.builder()
-                .subject(user.getUsername())
+                .subject(user.getEmail())
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() +24*60*60*1000))
                 .signWith(getSignInKey())
@@ -56,6 +68,24 @@ public class JwtServiceImpl implements JwtService{
     private SecretKey getSignInKey() {
         byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);
         return Keys.hmacShaKeyFor(keyBytes);
-
     }
+
+
+//    public Claims getUser(String token){
+//
+//        return Jwts.parser()
+//                .verifyWith(getSignInKey())
+//                .build()
+//                .parseSignedClaims(token)
+//                .getPayload();
+//    }
+//
+//    public Claims decodeJwt(Jwt token) {
+//        System.out.println(extractAllClaims(String.valueOf(token)));
+//
+//        return extractAllClaims(String.valueOf(token));
+//
+//    }
+
+
 }

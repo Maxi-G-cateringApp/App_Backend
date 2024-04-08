@@ -11,6 +11,6 @@ public class FoodItemDto {
 
     private String itemName;
     private Float itemPrice;
-    private Categories category;
+    private Integer categoryId;
 }
 

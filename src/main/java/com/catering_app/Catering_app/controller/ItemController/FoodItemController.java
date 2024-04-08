@@ -2,9 +2,8 @@ package com.catering_app.Catering_app.controller.ItemController;
 
 import com.catering_app.Catering_app.model.FoodItemCombos;
 import com.catering_app.Catering_app.model.Items;
-import com.catering_app.Catering_app.service.foodService.FoodComboService;
-import com.catering_app.Catering_app.service.foodService.FoodItemService;
-import com.catering_app.Catering_app.service.jwtService.JwtService;
+import com.catering_app.Catering_app.service.foodService.combo.FoodComboService;
+import com.catering_app.Catering_app.service.foodService.items.FoodItemService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,6 +29,15 @@ public class FoodItemController {
     @GetMapping("/items")
     public ResponseEntity<List<Items>> getAllFoodItems(){
         return ResponseEntity.ok(foodItemService.getAllFoodItems());
+    }
+    @GetMapping ("/combos-category")
+    public ResponseEntity<List<FoodItemCombos>>getFoodCombosByCategory(@RequestParam Integer id){
+        return ResponseEntity.ok(foodComboService.getCombosByCategoryId(id));
+    }
+
+    @GetMapping ("/items-category")
+    public ResponseEntity<List<Items>>getFoodItemByCategory(@RequestParam Integer id){
+        return ResponseEntity.ok(foodItemService.getItemByCategoryId(id));
     }
 
     @GetMapping("/all-combos")

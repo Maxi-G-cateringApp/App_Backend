@@ -9,21 +9,26 @@ import com.catering_app.Catering_app.service.jwtService.JwtService;
 import com.catering_app.Catering_app.service.jwtService.JwtServiceImpl;
 import com.catering_app.Catering_app.utilis.EmailUtil;
 import com.catering_app.Catering_app.utilis.OtpUtils;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.gson.GsonFactory;
 import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
+
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.security.GeneralSecurityException;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -34,6 +39,8 @@ public class AuthenticationServiceImpl implements AuthenticationService{
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
+    @Value("${spring.security.oauth2.resource-server.opaque-token.client-id}")
+    private String clientId;
 
 
     @Autowired
@@ -58,16 +65,17 @@ public class AuthenticationServiceImpl implements AuthenticationService{
             user.setOtp(verificationOtp);
             user.setOtpGeneratedDateTime(LocalDateTime.now());
             return userRepository.save(user);
-
     }
 
     private User createNewUser(UserRegisterDto registrationRequest) {
         User user = new User();
-        user.setUsername(registrationRequest.getUsername());
+        user.setUserName(registrationRequest.getUserName());
         user.setPhoneNumber(registrationRequest.getPhoneNumber());
         user.setEmail(registrationRequest.getEmail());
         user.setPassword(passwordEncoder.encode(registrationRequest.getPassword()));
         user.setRole(Role.USER);
+        user.setActive(false);
+        user.setGoogleSignIn(false);
         user.setRegisterDateTime(LocalDateTime.now());
         return user;
     }
@@ -75,13 +83,28 @@ public class AuthenticationServiceImpl implements AuthenticationService{
     public AuthenticationResponse authenticate(UserLoginDto userRequest){
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        userRequest.getUsername(),
+                        userRequest.getEmail(),
                         userRequest.getPassword()
                 )
         );
-        User user = userRepository.findByUsername(userRequest.getUsername()).orElseThrow();
+        User user = userRepository.findByEmail(userRequest.getEmail()).orElseThrow();
         String token = jwtService.generateToken(user);
-        return new AuthenticationResponse(token,user);
+        String refreshToken = jwtService.generateRefreshToken(new HashMap<>(),user);
+        return new AuthenticationResponse(token,user,refreshToken);
+    }
+
+    @Override
+    public AuthenticationResponse refreshToken(RefreshToken refreshToken) {
+        String email = jwtService.extractUserName(refreshToken.getToken());
+        User user = userRepository.findByEmail(email).orElseThrow();
+        if(jwtService.isValid(refreshToken.getToken(),user)){
+            var jwt = jwtService.generateToken(user);
+            AuthenticationResponse authenticationResponse = new AuthenticationResponse();
+            authenticationResponse.setToken(jwt);
+            authenticationResponse.setRefreshToken(refreshToken.getToken());
+            return authenticationResponse;
+        }
+        return null;
     }
 
     @Override
@@ -109,11 +132,44 @@ public class AuthenticationServiceImpl implements AuthenticationService{
         return "Resent";
     }
 
-
-
     @Override
     public Optional<User> getUserById(UUID userId) {
         return userRepository.findById(userId);
     }
 
+
+    public AuthenticationResponse googleSignIn(String token) throws GeneralSecurityException, IOException {
+        GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(new NetHttpTransport(), new GsonFactory())
+                .setAudience(Collections.singleton(clientId))
+                .build();
+        GoogleIdToken idToken = verifier.verify(token);
+        if(token != null){
+            GoogleIdToken.Payload payload = idToken.getPayload();
+            Optional<User> optionalUser = userRepository.findByEmail(payload.getEmail());
+            if (optionalUser.isPresent()){
+                User existingUser = optionalUser.get();
+                String refreshToken = payload.getSubject();
+                String gToken = jwtService.generateToken(existingUser);
+                return new AuthenticationResponse(gToken,existingUser,refreshToken);
+
+            }else{
+                User user = userRepository.save(User.builder()
+                        .active(payload.getEmailVerified())
+                        .email(payload.getEmail())
+                        .userName((String) payload.get("given_name"))
+                        .googleId(payload.getSubject())
+                        .googleSignIn(true)
+                        .role(Role.USER)
+                        .build());
+                String refreshToken = payload.getSubject();
+                String gToken = jwtService.generateToken(user);
+                return new AuthenticationResponse(gToken,user,refreshToken);
+            }
+        } else {
+            System.out.println("Invalid ID token.");
+        }
+        return null;
+    }
 }
+
+
