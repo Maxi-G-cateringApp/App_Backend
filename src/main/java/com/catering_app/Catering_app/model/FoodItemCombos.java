@@ -1,5 +1,6 @@
 package com.catering_app.Catering_app.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -20,15 +21,14 @@ public class FoodItemCombos {
     private String description;
     private Float comboPrice;
 
-    private String imageFile;
-    @Enumerated(EnumType.STRING)
-    private Categories category;
-
-//    @ManyToOne
-//    @JoinColumn(name = "category_id",referencedColumnName = "category_id")
-//    private Categories categories;
-
     @ManyToOne
-    @JoinColumn(name = "order_id", referencedColumnName = "order_id")
-    private Orders order;
+    @JoinColumn(name = "category_id",referencedColumnName = "category_id")
+    @JsonIgnore
+    private Categories categories;
+
+    @OneToOne
+    @JoinColumn(name = "image_id")
+    @JsonIgnore
+    private FoodComboImage foodComboImage;
+
 }

@@ -1,5 +1,6 @@
 package com.catering_app.Catering_app.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -18,16 +19,11 @@ public class Items {
     private Integer id;
     private String itemName;
     private Float itemPrice;
-    private String imageFileName;
-    @Enumerated(EnumType.STRING)
-    private Categories category;
-
-
-//    @ManyToOne
-//    @JoinColumn(name = "category_id",referencedColumnName = "category_id")
-//    private Categories categories;
 
     @ManyToOne
-    @JoinColumn(name = "order_id", referencedColumnName = "order_id")
-    private Orders order;
+    @JoinColumn(name = "category_id",referencedColumnName = "category_id")
+    @JsonIgnore
+    private Categories categories;
+
+
 }

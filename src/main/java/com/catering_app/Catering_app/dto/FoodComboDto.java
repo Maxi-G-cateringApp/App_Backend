@@ -10,6 +10,7 @@ public class FoodComboDto {
     private String comboName;
     private String description;
     private Float comboPrice;
-    private Categories category;
-    private MultipartFile imageFile;
+    private Integer categoryId;
+    private Integer foodComboId;
+    private MultipartFile file;
 }

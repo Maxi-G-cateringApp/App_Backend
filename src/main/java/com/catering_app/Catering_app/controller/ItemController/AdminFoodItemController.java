@@ -4,21 +4,20 @@ import com.catering_app.Catering_app.dto.FoodComboDto;
 import com.catering_app.Catering_app.dto.FoodItemDto;
 import com.catering_app.Catering_app.dto.ResponseDto;
 import com.catering_app.Catering_app.model.FoodItemCombos;
-import com.catering_app.Catering_app.service.foodService.FoodComboService;
-import com.catering_app.Catering_app.service.foodService.FoodItemService;
+import com.catering_app.Catering_app.service.foodService.combo.FoodComboService;
+import com.catering_app.Catering_app.service.foodService.items.FoodItemService;
 import com.catering_app.Catering_app.service.jwtService.JwtService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/admin")
-//@CrossOrigin("http://localhost:4200")
 public class AdminFoodItemController {
 
     private final FoodComboService foodComboService;
@@ -33,14 +32,17 @@ public class AdminFoodItemController {
 
 
     @PostMapping("/add-combo")
-    public ResponseEntity<ResponseDto> addComboItems(@RequestBody FoodComboDto foodComboDto,
+    public ResponseEntity<ResponseDto> addComboItems(@RequestParam ("combo") String comboJson,
+                                                     @RequestPart("file") MultipartFile file,
                                                      HttpServletRequest httpServletRequest) throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        FoodComboDto foodComboDto = mapper.readValue(comboJson, FoodComboDto.class);
 
         String token = httpServletRequest.getHeader("Authorization").split(" ")[1];
         if (jwtService.isTokenExpired(token)){
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }else{
-            boolean addItem = foodComboService.addFoodCombo(foodComboDto);
+            boolean addItem = foodComboService.addFoodCombo(foodComboDto,file);
             ResponseDto response;
             if (addItem){
                 response = new ResponseDto(true,"add item success");
@@ -50,6 +52,7 @@ public class AdminFoodItemController {
             return ResponseEntity.ok(response);
         }
     }
+
     @PostMapping("/add-item")
     public ResponseEntity<ResponseDto> addItems(@RequestBody FoodItemDto foodItemDto,
                                                 HttpServletRequest httpServletRequest) {
