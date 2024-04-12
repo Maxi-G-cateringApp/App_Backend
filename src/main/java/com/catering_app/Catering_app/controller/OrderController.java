@@ -1,7 +1,7 @@
-package com.catering_app.Catering_app.controller.orderController;
+package com.catering_app.Catering_app.controller;
 
 import com.catering_app.Catering_app.dto.*;
-import com.catering_app.Catering_app.model.Orders;
+import com.catering_app.Catering_app.model.Order;
 import com.catering_app.Catering_app.service.orderService.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -29,10 +29,10 @@ public class OrderController {
     }
 
     @GetMapping("/get-order/{orderId}")
-    public ResponseEntity<Orders> getOrderByUserId(@PathVariable("orderId") UUID orderId){
-        Optional<Orders> optionalOrders = orderService.getOrderById(orderId);
+    public ResponseEntity<Order> getOrderByUserId(@PathVariable("orderId") UUID orderId){
+        Optional<Order> optionalOrders = orderService.getOrderById(orderId);
         if (optionalOrders.isPresent()){
-            Orders order = optionalOrders.get();
+            Order order = optionalOrders.get();
             return ResponseEntity.ok(order);
         }
         return null;
@@ -45,7 +45,7 @@ public class OrderController {
 
     }
     @GetMapping("/get-orders")
-    public ResponseEntity<List<Orders>> getAllOrders(){
+    public ResponseEntity<List<Order>> getAllOrders(){
         return ResponseEntity.ok(orderService.getAllOrders());
     }
 
@@ -56,13 +56,13 @@ public class OrderController {
     }
 
     @GetMapping("/get-order/userId/{userId}")
-    public ResponseEntity<List<Orders>>getOrderByUser(@PathVariable("userId") UUID userId){
+    public ResponseEntity<List<Order>>getOrderByUser(@PathVariable("userId") UUID userId){
         return ResponseEntity.ok(orderService.getOrderByUserId(userId));
 
     }
 
     @PostMapping("/order-success")
-    public ResponseEntity<Orders>orderSuccess(@RequestBody OrderSuccessRequest orderSuccessRequest){
+    public ResponseEntity<Order>orderSuccess(@RequestBody OrderSuccessRequest orderSuccessRequest){
         return ResponseEntity.ok(orderService.orderSuccess(orderSuccessRequest));
 
     }

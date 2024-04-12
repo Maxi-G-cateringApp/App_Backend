@@ -25,7 +25,7 @@ public class UserLocation {
     private String name;
     @ManyToOne(cascade = CascadeType.ALL)
     @JsonBackReference
-    private Orders orders;
+    private Order order;
 //    @ManyToOne(cascade = CascadeType.ALL)
 //    private User user;
 

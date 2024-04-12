@@ -10,6 +10,7 @@ public interface EventService {
 
     boolean addEvent(EventDto eventDto);
     List<Events> getAllEvents();
+    Optional<Events>findByEventName(String eventName);
     void deleteEvent(Integer id);
     Optional<Events> getEventById(Integer id);
 }

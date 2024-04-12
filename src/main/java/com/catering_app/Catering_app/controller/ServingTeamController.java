@@ -1,4 +1,4 @@
-package com.catering_app.Catering_app.controller.teamController;
+package com.catering_app.Catering_app.controller;
 
 import com.catering_app.Catering_app.dto.ResponseDto;
 import com.catering_app.Catering_app.dto.team.ServingEmpDto;

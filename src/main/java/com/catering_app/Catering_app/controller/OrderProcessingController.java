@@ -1,4 +1,4 @@
-package com.catering_app.Catering_app.controller.orderProcessingController;
+package com.catering_app.Catering_app.controller;
 
 import com.catering_app.Catering_app.dto.OrderProcessDto;
 import com.catering_app.Catering_app.model.OrderProcessing;

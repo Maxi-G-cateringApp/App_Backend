@@ -1,4 +1,4 @@
-package com.catering_app.Catering_app.controller.authController;
+package com.catering_app.Catering_app.controller;
 
 import com.catering_app.Catering_app.dto.*;
 import com.catering_app.Catering_app.model.AuthenticationResponse;
@@ -6,29 +6,17 @@ import com.catering_app.Catering_app.model.User;
 import com.catering_app.Catering_app.repository.UserRepository;
 import com.catering_app.Catering_app.service.authService.AuthenticationService;
 import com.catering_app.Catering_app.service.authService.AuthenticationServiceImpl;
-import com.google.api.client.auth.oauth2.TokenResponse;
-import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow;
-import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
-import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
-import com.google.api.client.http.HttpTransport;
-import com.google.api.client.http.javanet.NetHttpTransport;
-import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken.Payload;
-import com.google.api.client.json.gson.GsonFactory;
 import jakarta.mail.MessagingException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
 import java.util.Optional;
 import java.util.UUID;
 
 @RestController
-//@CrossOrigin("http://localhost:4200")
 public class AuthenticationController {
 
 
@@ -40,9 +28,6 @@ public class AuthenticationController {
     public AuthenticationController(AuthenticationServiceImpl authenticationService, UserRepository userRepository) {
         this.authenticationService = authenticationService;
         this.userRepository = userRepository;
-
-//        this.transport = new NetHttpTransport();
-//        this.jsonFactory = GsonFactory.getDefaultInstance();
     }
 
     @PostMapping("/register")

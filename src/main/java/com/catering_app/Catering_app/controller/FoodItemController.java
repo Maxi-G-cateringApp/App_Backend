@@ -1,4 +1,4 @@
-package com.catering_app.Catering_app.controller.ItemController;
+package com.catering_app.Catering_app.controller;
 
 import com.catering_app.Catering_app.model.FoodItemCombos;
 import com.catering_app.Catering_app.model.Items;

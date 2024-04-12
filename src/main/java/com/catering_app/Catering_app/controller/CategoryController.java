@@ -1,4 +1,4 @@
-package com.catering_app.Catering_app.controller.ItemController;
+package com.catering_app.Catering_app.controller;
 
 import com.catering_app.Catering_app.dto.CategoriesDto;
 import com.catering_app.Catering_app.dto.ResponseDto;
@@ -23,7 +23,7 @@ public class CategoryController {
     public ResponseEntity<?> addCategories(@RequestBody CategoriesDto categoriesDto){
         Optional<Categories> optionalCategories = categoriesService.findByCategoriesName(categoriesDto.getCategoriesName());
         if (optionalCategories.isPresent()){
-            return ResponseEntity.ok(HttpStatus.CONFLICT);
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Data Exist");
         }else {
             return ResponseEntity.ok(categoriesService.addCategory(categoriesDto));
         }

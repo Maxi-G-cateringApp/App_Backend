@@ -15,7 +15,7 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Orders {
+public class Order {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -27,11 +27,11 @@ public class Orders {
     @JsonManagedReference
     private User user;
 
-    @OneToMany(mappedBy = "orders",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "order",cascade = CascadeType.ALL)
     @JsonManagedReference
     List<OrderedItems> orderedItems = new ArrayList<>();
 
-    @OneToMany(mappedBy = "orders",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "order",cascade = CascadeType.ALL)
     @JsonManagedReference
     List<OrderedCombos> orderedCombos = new ArrayList<>();
 
@@ -56,6 +56,9 @@ public class Orders {
     private Status status;
     private String decorationOption;
     private String transactionId;
+    @OneToOne(mappedBy = "order",cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private Review review;
 
 
 }

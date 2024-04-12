@@ -1,4 +1,4 @@
-package com.catering_app.Catering_app.controller.paymentController;
+package com.catering_app.Catering_app.controller;
 
 
 import com.catering_app.Catering_app.model.TransactionDetails;
