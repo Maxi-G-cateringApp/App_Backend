@@ -1,4 +1,4 @@
-package com.catering_app.Catering_app.controller.imageController;
+package com.catering_app.Catering_app.controller;
 
 import com.catering_app.Catering_app.dto.ProfileResponseDto;
 import com.catering_app.Catering_app.model.User;

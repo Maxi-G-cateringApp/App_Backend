@@ -151,7 +151,6 @@ public class AuthenticationServiceImpl implements AuthenticationService{
                 String refreshToken = payload.getSubject();
                 String gToken = jwtService.generateToken(existingUser);
                 return new AuthenticationResponse(gToken,existingUser,refreshToken);
-
             }else{
                 User user = userRepository.save(User.builder()
                         .active(payload.getEmailVerified())

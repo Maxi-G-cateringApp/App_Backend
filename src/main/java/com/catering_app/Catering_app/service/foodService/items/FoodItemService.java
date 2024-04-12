@@ -1,8 +1,6 @@
 package com.catering_app.Catering_app.service.foodService.items;
 
-import com.catering_app.Catering_app.dto.FoodComboDto;
 import com.catering_app.Catering_app.dto.FoodItemDto;
-import com.catering_app.Catering_app.model.FoodItemCombos;
 import com.catering_app.Catering_app.model.Items;
 
 import java.util.List;
@@ -12,6 +10,7 @@ public interface FoodItemService {
 
     boolean addFoodItem(FoodItemDto fooItemDto);
     List<Items> getAllFoodItems();
+    Optional<Items> findByName(String itemName);
 
     void deleteItemById(Integer id);
     Optional<Items> findById(Integer id);

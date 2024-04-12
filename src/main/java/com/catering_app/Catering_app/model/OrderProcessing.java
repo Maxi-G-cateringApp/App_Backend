@@ -21,7 +21,7 @@ public class OrderProcessing {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
     @ManyToOne
-    private Orders orders;
+    private Order order;
 
     @ManyToOne
     private ServingTeam servingTeam;

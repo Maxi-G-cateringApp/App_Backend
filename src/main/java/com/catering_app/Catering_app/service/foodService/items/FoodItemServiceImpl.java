@@ -2,7 +2,6 @@ package com.catering_app.Catering_app.service.foodService.items;
 
 import com.catering_app.Catering_app.dto.FoodItemDto;
 import com.catering_app.Catering_app.model.Categories;
-import com.catering_app.Catering_app.model.FoodItemCombos;
 import com.catering_app.Catering_app.model.Items;
 import com.catering_app.Catering_app.repository.ItemsRepository;
 import com.catering_app.Catering_app.service.categoryService.CategoriesService;
@@ -46,6 +45,10 @@ public class FoodItemServiceImpl implements FoodItemService {
         return itemsRepository.findAll();
     }
 
+    @Override
+    public Optional<Items> findByName(String itemName) {
+        return itemsRepository.findByItemName(itemName);
+    }
 
 
     @Override

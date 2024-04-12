@@ -2,7 +2,7 @@ package com.catering_app.Catering_app.service.orderProcessService;
 
 import com.catering_app.Catering_app.dto.OrderProcessDto;
 import com.catering_app.Catering_app.model.OrderProcessing;
-import com.catering_app.Catering_app.model.Orders;
+import com.catering_app.Catering_app.model.Order;
 import com.catering_app.Catering_app.model.teams.DecorationTeam;
 import com.catering_app.Catering_app.model.teams.KitchenCrew;
 import com.catering_app.Catering_app.model.teams.ServingTeam;
@@ -36,18 +36,18 @@ public class OrderProcessServiceImpl implements OrderProcessService{
     @Override
     public OrderProcessing orderProcessing(OrderProcessDto orderProcessDto) {
         OrderProcessing orderProcessing = new OrderProcessing();
-        Optional<Orders> optionalOrders = orderService.getOrderById(orderProcessDto.getOrderId());
+        Optional<Order> optionalOrders = orderService.getOrderById(orderProcessDto.getOrderId());
         Optional<ServingTeam> optionalServingTeam = servingTeamService.getServingTeamById(orderProcessDto.getServingTeamId());
         Optional<DecorationTeam> optionalDecorationTeam = decorationTeamService.getDecorationTeamById(orderProcessDto.getDecorationTeamId());
         Optional<KitchenCrew>optionalKitchenCrew = kitchenCrewService.getKitchenCrewTeamById(orderProcessDto.getKitchenCrewId());
 
 
-        Orders order = optionalOrders.orElseThrow(() -> new NoSuchElementException("Order not found"));
+        Order order = optionalOrders.orElseThrow(() -> new NoSuchElementException("Order not found"));
         ServingTeam servingTeam = optionalServingTeam.orElseThrow(() -> new NoSuchElementException("Serving team not found"));
         DecorationTeam decorationTeam = optionalDecorationTeam.orElseThrow(() -> new NoSuchElementException("Decoration team not found"));
         KitchenCrew kitchenCrew = optionalKitchenCrew.orElseThrow(() -> new NoSuchElementException("Kitchen crew not found"));
 
-        orderProcessing.setOrders(order);
+        orderProcessing.setOrder(order);
         orderProcessing.setServingTeam(servingTeam);
         orderProcessing.setDecorationTeam(decorationTeam);
         orderProcessing.setKitchenCrew(kitchenCrew);

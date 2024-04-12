@@ -11,7 +11,6 @@ import com.catering_app.Catering_app.service.foodService.combo.FoodComboService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -35,48 +34,47 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public OrderResponse saveOrder(OrderDto orderDto) {
-
-        Orders orders = new Orders();
+        Order order = new Order();
         Optional<User> optionalUser = authenticationService.getUserById(orderDto.getUserId());
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
-            orders.setUser(user);
-            createOrder(orderDto, orders);
+            order.setUser(user);
+            createOrder(orderDto, order);
 
             List<OrderedCombos> OrderedCombosList = orderDto.getFoodCombos().stream().map(
                     foodCombo -> {
                         OrderedCombos orderedCombos = new OrderedCombos();
                         orderedCombos.setFoodCombos(foodCombo);
-                        orderedCombos.setOrders(orders);
+                        orderedCombos.setOrder(order);
                         return orderedCombos;
                     }).toList();
             List<OrderedItems> orderedItemsList = orderDto.getFoodItems().stream().map(
                     item -> {
                         OrderedItems orderedItems = new OrderedItems();
                         orderedItems.setFoodItems(item);
-                        orderedItems.setOrders(orders);
+                        orderedItems.setOrder(order);
                         return orderedItems;
                     }).toList();
             Events event = eventService.getEventById(orderDto.getEventId()).get();
-            orders.setEvents(event);
-            orders.setOrderedCombos(OrderedCombosList);
-            orders.setOrderedItems(orderedItemsList);
-            orderRepository.save(orders);
+            order.setEvents(event);
+            order.setOrderedCombos(OrderedCombosList);
+            order.setOrderedItems(orderedItemsList);
+            orderRepository.save(order);
         } else {
             throw new RuntimeException();
         }
-        return new OrderResponse(orders.getId());
+        return new OrderResponse(order.getId());
     }
 
-    private static void createOrder(OrderDto orderDto, Orders orders) {
-        orders.setVenue(orderDto.getVenue());
-        orders.setPeopleCount(orderDto.getPeopleCount());
-        orders.setDate(orderDto.getDate());
-        orders.setOrderDate(new Date(System.currentTimeMillis()));
-        orders.setStatus(Status.PENDING);
-        orders.setTimeFrom(orderDto.getTimeFrom());
-        orders.setTimeTo(orderDto.getTimeTo());
-        orders.setDecorationOption(orderDto.getDecorationOption());
+    private static void createOrder(OrderDto orderDto, Order order) {
+        order.setVenue(orderDto.getVenue());
+        order.setPeopleCount(orderDto.getPeopleCount());
+        order.setDate(orderDto.getDate());
+        order.setOrderDate(new Date(System.currentTimeMillis()));
+        order.setStatus(Status.PENDING);
+        order.setTimeFrom(orderDto.getTimeFrom());
+        order.setTimeTo(orderDto.getTimeTo());
+        order.setDecorationOption(orderDto.getDecorationOption());
     }
 
 
@@ -86,23 +84,23 @@ public class OrderServiceImpl implements OrderService {
         Float itemPrice = 0f;
         float total = 0f;
 
-        Optional<Orders> optionalOrders = getOrderById(orderId);
+        Optional<Order> optionalOrders = getOrderById(orderId);
         if (optionalOrders.isPresent()) {
-            Orders orders = optionalOrders.get();
+            Order order = optionalOrders.get();
 
-            for (OrderedCombos combo : orders.getOrderedCombos()) {
+            for (OrderedCombos combo : order.getOrderedCombos()) {
                 comboPrice += combo.getFoodCombos().getComboPrice();
             }
-            for (OrderedItems items : orders.getOrderedItems()) {
+            for (OrderedItems items : order.getOrderedItems()) {
                 itemPrice += items.getFoodItems().getItemPrice();
             }
-            Integer count = orders.getPeopleCount();
+            Integer count = order.getPeopleCount();
             total = (comboPrice + itemPrice) * count;
         }
         return new PaymentResponse(total);
     }
     @Override
-    public Optional<Orders> getOrderById(UUID id) {
+    public Optional<Order> getOrderById(UUID id) {
         return orderRepository.findById(id);
     }
 
@@ -110,8 +108,8 @@ public class OrderServiceImpl implements OrderService {
     public void addLocation(LocationDto locationDto) {
 
         UserLocation userLocation = getUserLocation(locationDto);
-        Orders order = getOrderById(locationDto.getOrderId()).get();
-        userLocation.setOrders(order);
+        Order order = getOrderById(locationDto.getOrderId()).get();
+        userLocation.setOrder(order);
         order.setUserLocation(userLocation);
 
 
@@ -119,16 +117,16 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<Orders> getAllOrders() {
+    public List<Order> getAllOrders() {
         return orderRepository.findAll().stream().
-                sorted(Comparator.comparing(Orders::getOrderDate).reversed()).toList();
+                sorted(Comparator.comparing(Order::getOrderDate).reversed()).toList();
     }
 
     @Override
     public void acceptOrder(UUID orderId) {
-        Optional<Orders> optionalOrders = getOrderById(orderId);
+        Optional<Order> optionalOrders = getOrderById(orderId);
         if (optionalOrders.isPresent()) {
-            Orders order = optionalOrders.get();
+            Order order = optionalOrders.get();
             order.setStatus(Status.ACCEPTED);
             orderRepository.save(order);
         }
@@ -136,20 +134,27 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<Orders> getOrderByUserId(UUID userId) {
+    public List<Order> getOrderByUserId(UUID userId) {
         Optional<User> optionalUser = userRepository.findById(userId);
         if (optionalUser.isPresent()){
             User user = optionalUser.get();
-            return orderRepository.findByUser(user);
+            return orderRepository.findByUser(user).stream()
+                    .sorted(Comparator.comparing(Order::getOrderDate).reversed()).toList();
         }
         return null;
     }
 
+//    @Override
+//    public List<Orders> getAllOrders() {
+//        return orderRepository.findAll().stream().
+//                sorted(Comparator.comparing(Orders::getOrderDate).reversed()).toList();
+//    }
+
     @Override
-    public Orders orderSuccess(OrderSuccessRequest orderSuccessRequest) {
-        Optional<Orders>optionalOrders = orderRepository.findById(orderSuccessRequest.getOrderId());
+    public Order orderSuccess(OrderSuccessRequest orderSuccessRequest) {
+        Optional<Order>optionalOrders = orderRepository.findById(orderSuccessRequest.getOrderId());
         if (optionalOrders.isPresent()){
-            Orders order = optionalOrders.get();
+            Order order = optionalOrders.get();
             order.setTotalAmount(orderSuccessRequest.getTotalAmount());
             order.setAdvanceAmount(orderSuccessRequest.getAdvanceAmount());
             order.setTransactionId(orderSuccessRequest.getTransactionId());
@@ -161,22 +166,24 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public boolean cancelOrder(UUID orderId) {
-        Optional<Orders> optionalOrders = orderRepository.findById(orderId);
+        Optional<Order> optionalOrders = orderRepository.findById(orderId);
         if(optionalOrders.isPresent()){
-            Orders order = optionalOrders.get();
+            Order order = optionalOrders.get();
             Date date = order.getDate();
             Date today = new Date();
 
-            long diffInMillies = Math.abs(today.getTime() - date.getTime());
-            long diffInDays = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
+            long diffInMillis = Math.abs(today.getTime() - date.getTime());
+            long diffInDays = TimeUnit.DAYS.convert(diffInMillis, TimeUnit.MILLISECONDS);
 
-            if (diffInDays > 2){
+            if (order.getPeopleCount() <= 25 && order.getStatus() != Status.PROCESSING) {
                 order.setStatus(Status.CANCELLED);
-                orderRepository.save(order);
+            } else if (order.getPeopleCount() > 100 && diffInDays > 2 ){
+                order.setStatus(Status.CANCELLED);
                 return true;
             }else{
                 return false;
             }
+            orderRepository.save(order);
         }
         return false;
     }

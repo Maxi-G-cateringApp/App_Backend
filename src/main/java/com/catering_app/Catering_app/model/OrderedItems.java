@@ -23,7 +23,7 @@ public class OrderedItems {
     @ManyToOne
     @JoinColumn(name = "order_id")
     @JsonBackReference
-    private Orders orders;
+    private Order order;
 
 
 }

@@ -22,5 +22,5 @@ public class OrderedCombos {
     @ManyToOne
     @JoinColumn(name = "order_id")
     @JsonBackReference
-    private Orders orders;
+    private Order order;
 }

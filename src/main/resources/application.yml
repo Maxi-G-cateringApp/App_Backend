@@ -20,12 +20,6 @@ spring:
           introspection-uri: https://www.googleapis.com
           client-id: "527124445285-2fo34e8jg723jaaemr4b0bnnq3jdoq8b.apps.googleusercontent.com"
           client_secret: "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"
-#          scope: openid,profile,email
-#      resource-server:
-#        jwt:
-#          issuer-uri: http://accounts.google.com
-#          jwt-set-uri: https://www.googleapis.com/oauth2/v1/certs
-#          redirect-uri: http://localhost:8080/login/oauth2/code/google
 
   mail:
     properties:

@@ -1,8 +1,5 @@
 package com.catering_app.Catering_app.service.paymentService;
 
-import com.catering_app.Catering_app.dto.PaymentConfirmationResponse;
-import com.catering_app.Catering_app.dto.PaymentRequest;
-import com.catering_app.Catering_app.model.Orders;
 import com.catering_app.Catering_app.model.TransactionDetails;
 import com.catering_app.Catering_app.service.orderService.OrderService;
 import com.razorpay.Order;
@@ -10,10 +7,8 @@ import com.razorpay.RazorpayClient;
 import com.razorpay.RazorpayException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
