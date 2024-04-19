@@ -1,6 +1,7 @@
 package com.catering_app.Catering_app.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -34,6 +35,6 @@ public class Review {
 
     @OneToOne(fetch = FetchType.LAZY,optional = false)
     @JoinColumn(name = "order_id",nullable = false)
-    @JsonBackReference
+    @JsonIgnore
     private Order order;
 }

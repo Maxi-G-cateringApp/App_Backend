@@ -7,6 +7,7 @@ import com.catering_app.Catering_app.repository.UserRepository;
 import com.catering_app.Catering_app.service.authService.AuthenticationService;
 import com.catering_app.Catering_app.service.authService.AuthenticationServiceImpl;
 import jakarta.mail.MessagingException;
+import org.springframework.core.convert.converter.Converter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -32,9 +33,8 @@ public class AuthenticationController {
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody UserRegisterDto userRequest) throws MessagingException {
-        if (userRepository.existsByEmail(userRequest.getEmail()) ||
-                userRepository.existsByUserName(userRequest.getUserName())) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(" Email or Username Exist");
+        if (userRepository.existsByEmail(userRequest.getEmail())) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(" Email  Exist");
         }
         return ResponseEntity.ok(authenticationService.register(userRequest));
     }
@@ -81,6 +81,11 @@ public class AuthenticationController {
     @PostMapping("/google/login")
     public ResponseEntity<AuthenticationResponse> signInWithGoogle(@RequestParam("token") String token) throws GeneralSecurityException, IOException {
         return ResponseEntity.ok(authenticationService.googleSignIn(token));
+    }
+
+    @PutMapping("/update-user/{userId}")
+    public ResponseEntity<User>updateUser(@PathVariable UUID userId, @RequestBody UpdateDto updateUser){
+        return ResponseEntity.ok(authenticationService.updateUser(userId,updateUser));
     }
 
 }

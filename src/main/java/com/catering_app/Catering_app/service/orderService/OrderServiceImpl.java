@@ -109,10 +109,8 @@ public class OrderServiceImpl implements OrderService {
 
         UserLocation userLocation = getUserLocation(locationDto);
         Order order = getOrderById(locationDto.getOrderId()).get();
-        userLocation.setOrder(order);
+//        userLocation.setOrder(order);
         order.setUserLocation(userLocation);
-
-
         userLocationRepository.save(userLocation);
     }
 
@@ -144,11 +142,6 @@ public class OrderServiceImpl implements OrderService {
         return null;
     }
 
-//    @Override
-//    public List<Orders> getAllOrders() {
-//        return orderRepository.findAll().stream().
-//                sorted(Comparator.comparing(Orders::getOrderDate).reversed()).toList();
-//    }
 
     @Override
     public Order orderSuccess(OrderSuccessRequest orderSuccessRequest) {
@@ -164,28 +157,40 @@ public class OrderServiceImpl implements OrderService {
         return null;
     }
 
-    @Override
-    public boolean cancelOrder(UUID orderId) {
-        Optional<Order> optionalOrders = orderRepository.findById(orderId);
-        if(optionalOrders.isPresent()){
-            Order order = optionalOrders.get();
-            Date date = order.getDate();
-            Date today = new Date();
 
-            long diffInMillis = Math.abs(today.getTime() - date.getTime());
-            long diffInDays = TimeUnit.DAYS.convert(diffInMillis, TimeUnit.MILLISECONDS);
+@Override
+public boolean cancelOrder(UUID orderId) {
+    Optional<Order> optionalOrder = orderRepository.findById(orderId);
+    if (optionalOrder.isPresent()) {
+        Order order = optionalOrder.get();
 
-            if (order.getPeopleCount() <= 25 && order.getStatus() != Status.PROCESSING) {
-                order.setStatus(Status.CANCELLED);
-            } else if (order.getPeopleCount() > 100 && diffInDays > 2 ){
-                order.setStatus(Status.CANCELLED);
-                return true;
-            }else{
-                return false;
-            }
+        if (order.getPeopleCount() < 25 && order.getStatus() != Status.PROCESSING) {
+            order.setStatus(Status.CANCELLED);
             orderRepository.save(order);
+            return true;
+        } else if (order.getPeopleCount() >= 25) {
+            return false;
+        } else {
+            order.setStatus(Status.CANCELLED);
+            orderRepository.save(order);
+            return true;
         }
-        return false;
+    }
+    return false;
+}
+
+
+    @Override
+    public boolean orderComplete(UUID orderId) {
+        Optional<Order> optionalOrder = orderRepository.findById(orderId);
+        if (optionalOrder.isPresent()){
+            Order order = optionalOrder.get();
+            order.setStatus(Status.COMPLETED);
+            orderRepository.save(order);
+            return true;
+        }else{
+            return false;
+        }
     }
 
     private static UserLocation getUserLocation(LocationDto locationDto) {
