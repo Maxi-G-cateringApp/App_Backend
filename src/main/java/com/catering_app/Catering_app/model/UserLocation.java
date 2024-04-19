@@ -23,11 +23,11 @@ public class UserLocation {
     private double latitude;
     private double longitude;
     private String name;
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JsonBackReference
-    private Order order;
+
 //    @ManyToOne(cascade = CascadeType.ALL)
-//    private User user;
+//    @JsonBackReference
+//    private Order order;
+
 
 
 }

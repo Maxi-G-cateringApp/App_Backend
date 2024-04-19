@@ -33,3 +33,7 @@ spring:
     password: swysorteaomozkar
     port: '587'
 
+  jackson:
+    serialization:
+      FAIL_ON_EMPTY_BEANS: 'false'
+

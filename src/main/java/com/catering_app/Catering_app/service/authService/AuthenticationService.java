@@ -19,6 +19,6 @@ public interface AuthenticationService {
     boolean verifyAccount(OtpDto otpDto);
     String regenerateOtp(String email, String otp) throws MessagingException;
     Optional<User> getUserById(UUID userId);
-
+    public User updateUser(UUID userId,UpdateDto updateUser);
     public AuthenticationResponse googleSignIn(String token)throws GeneralSecurityException, IOException;
 }

@@ -5,4 +5,5 @@ import com.catering_app.Catering_app.model.User;
 public interface SchedulerService {
 
     void deleteUnverifiedUser();
+    public void changeStatus();
 }

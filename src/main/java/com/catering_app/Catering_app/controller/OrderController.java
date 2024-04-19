@@ -4,6 +4,7 @@ import com.catering_app.Catering_app.dto.*;
 import com.catering_app.Catering_app.model.Order;
 import com.catering_app.Catering_app.service.orderService.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -77,4 +78,14 @@ public class OrderController {
         }
     }
 
+    @PostMapping("/complete-order")
+    public ResponseEntity<?>completeOrder(@RequestParam ("orderId") UUID orderId){
+        boolean response = orderService.orderComplete(orderId);
+        if (response){
+            return ResponseEntity.ok(new ResponseDto(true,"completed"));
+        }else {
+            return ResponseEntity.ok(new ResponseDto(false,"error"));
+        }
+
+    }
 }

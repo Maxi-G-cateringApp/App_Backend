@@ -18,5 +18,6 @@ public interface OrderService {
     List<Order> getOrderByUserId(UUID userId);
     Order orderSuccess(OrderSuccessRequest orderSuccessRequest);
     boolean cancelOrder(UUID orderId);
+    boolean orderComplete(UUID orderId);
 
 }

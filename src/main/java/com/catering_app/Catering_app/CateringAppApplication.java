@@ -24,7 +24,7 @@ public class CateringAppApplication  implements CommandLineRunner{
 		User admin = userRepository.findByRole(Role.ADMIN);
 		if (admin == null){
 			User user = new User();
-			user.setUserName("admin1995");
+			user.setName("admin1995");
 			user.setEmail("admin@gmail.com");
 			user.setPassword(new BCryptPasswordEncoder().encode("admin1234"));
 			user.setPhoneNumber("2212345574");

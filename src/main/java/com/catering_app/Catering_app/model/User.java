@@ -29,7 +29,7 @@ public class User implements UserDetails {
     @Column(name = "user_id")
     private UUID id;
     private String googleId;
-    private String userName;
+    private String name;
     private String phoneNumber;
     private String email;
     private String password;

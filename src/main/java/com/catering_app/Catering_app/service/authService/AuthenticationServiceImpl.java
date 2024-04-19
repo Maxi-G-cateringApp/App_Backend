@@ -14,6 +14,7 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.gson.GsonFactory;
 import jakarta.mail.MessagingException;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -69,7 +70,7 @@ public class AuthenticationServiceImpl implements AuthenticationService{
 
     private User createNewUser(UserRegisterDto registrationRequest) {
         User user = new User();
-        user.setUserName(registrationRequest.getUserName());
+        user.setName(registrationRequest.getUserName());
         user.setPhoneNumber(registrationRequest.getPhoneNumber());
         user.setEmail(registrationRequest.getEmail());
         user.setPassword(passwordEncoder.encode(registrationRequest.getPassword()));
@@ -155,7 +156,7 @@ public class AuthenticationServiceImpl implements AuthenticationService{
                 User user = userRepository.save(User.builder()
                         .active(payload.getEmailVerified())
                         .email(payload.getEmail())
-                        .userName((String) payload.get("given_name"))
+                        .name((String) payload.get("given_name"))
                         .googleId(payload.getSubject())
                         .googleSignIn(true)
                         .role(Role.USER)
@@ -168,6 +169,20 @@ public class AuthenticationServiceImpl implements AuthenticationService{
             System.out.println("Invalid ID token.");
         }
         return null;
+    }
+
+    public User updateUser(UUID userId,UpdateDto updateUser){
+        System.out.println(userId+" update user");
+        Optional<User>optionalUser = userRepository.findById(userId);
+        if (optionalUser.isPresent()){
+            User user = optionalUser.get();
+            user.setName(updateUser.getName());
+            user.setPhoneNumber(updateUser.getPhoneNumber());
+            userRepository.save(user);
+            return user;
+        }else{
+            throw new EntityNotFoundException();
+        }
     }
 }
 
