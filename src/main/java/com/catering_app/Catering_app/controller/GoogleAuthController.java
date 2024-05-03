@@ -16,14 +16,14 @@
 //import org.springframework.web.bind.annotation.RestController;
 //
 //import java.util.Arrays;
-//
+
 //@RestController
 //public class GoogleAuthController {
 //    @Value("${spring.security.oauth2.resource-server.opaque-token.client-id}")
 //    private String clientId;
 //    @Value("${spring.security.oauth2.resource-server.opaque-token.client_secret}")
 //    private String clientSecret;
-//
+
 //    @GetMapping("/auth/url")
 //    public ResponseEntity<UrlDto>auth(){
 //        String url = new GoogleAuthorizationCodeRequestUrl(
@@ -34,7 +34,7 @@
 //        System.out.println(url);
 //        return ResponseEntity.ok(new UrlDto(url));
 //    }
-//
+
 //    @GetMapping("/auth/callback")
 //    public ResponseEntity<TokenDto> callBack(@RequestParam("code") String code){
 //        String token;
@@ -52,7 +52,7 @@
 //        }
 //        return ResponseEntity.ok(new TokenDto(token));
 //    }
-//
+
 //    @GetMapping("/message")
 //    public ResponseEntity<MessageDto>privateMessage(@AuthenticationPrincipal(expression = "name") String name){
 //        return ResponseEntity.ok(new MessageDto("private content"+name));
