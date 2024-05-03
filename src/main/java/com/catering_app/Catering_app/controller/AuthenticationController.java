@@ -7,13 +7,13 @@ import com.catering_app.Catering_app.repository.UserRepository;
 import com.catering_app.Catering_app.service.authService.AuthenticationService;
 import com.catering_app.Catering_app.service.authService.AuthenticationServiceImpl;
 import jakarta.mail.MessagingException;
-import org.springframework.core.convert.converter.Converter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -66,7 +66,6 @@ public class AuthenticationController {
         return ResponseEntity.ok(authenticationService.regenerateOtp(otpDto.getEmail(), otpDto.getOtp()));
     }
 
-
     @GetMapping("/get-user")
     public ResponseEntity<User> getUserById(@RequestParam UUID userId) {
         Optional<User> optionalUser = authenticationService.getUserById(userId);
@@ -77,6 +76,10 @@ public class AuthenticationController {
             return ResponseEntity.notFound().build();
         }
     }
+    @GetMapping("/all-users")
+    public ResponseEntity<List<User>>getAllUser(){
+        return ResponseEntity.ok(authenticationService.getAllUsers());
+    }
 
     @PostMapping("/google/login")
     public ResponseEntity<AuthenticationResponse> signInWithGoogle(@RequestParam("token") String token) throws GeneralSecurityException, IOException {
@@ -86,6 +89,11 @@ public class AuthenticationController {
     @PutMapping("/update-user/{userId}")
     public ResponseEntity<User>updateUser(@PathVariable UUID userId, @RequestBody UpdateDto updateUser){
         return ResponseEntity.ok(authenticationService.updateUser(userId,updateUser));
+    }
+
+    @GetMapping("/get-admin")
+    public ResponseEntity<User>getAdmin(){
+        return ResponseEntity.ok(authenticationService.getAdmin());
     }
 
 }

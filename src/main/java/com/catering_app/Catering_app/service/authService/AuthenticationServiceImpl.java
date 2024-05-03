@@ -28,10 +28,8 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class AuthenticationServiceImpl implements AuthenticationService{
@@ -136,6 +134,7 @@ public class AuthenticationServiceImpl implements AuthenticationService{
     @Override
     public Optional<User> getUserById(UUID userId) {
         return userRepository.findById(userId);
+
     }
 
 
@@ -169,6 +168,17 @@ public class AuthenticationServiceImpl implements AuthenticationService{
             System.out.println("Invalid ID token.");
         }
         return null;
+    }
+
+    @Override
+    public User getAdmin() {
+        return userRepository.findByRole(Role.ADMIN);
+    }
+
+    @Override
+    public List<User> getAllUsers() {
+        return userRepository.findAll().stream().
+                filter(user->user.getRole().equals(Role.USER)).toList();
     }
 
     public User updateUser(UUID userId,UpdateDto updateUser){

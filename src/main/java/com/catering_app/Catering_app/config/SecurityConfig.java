@@ -56,7 +56,9 @@ public class SecurityConfig {
                                         "/swagger-ui/**",
                                         "/swagger-ui.html",
                                         "/swagger-resources/**",
-                                        "/webjars/**")
+                                        "/webjars/**",
+                                        "/chat/**",
+                                        "/ws/**")
                                 .permitAll()
                                 .requestMatchers("/admin/**").hasAuthority("ADMIN")
                                 .anyRequest()
