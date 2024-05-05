@@ -7,4 +7,5 @@ public class DecorEmpDto {
 
     private String decorationEmpName;
     private Integer decorationTeamId;
+    private Long emp;
 }

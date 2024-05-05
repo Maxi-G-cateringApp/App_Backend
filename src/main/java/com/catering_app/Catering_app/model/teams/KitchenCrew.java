@@ -19,7 +19,7 @@ public class KitchenCrew {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String teamName;
-    
+    private int count;
     @OneToMany(mappedBy = "kitchenCrew",cascade = CascadeType.ALL)
     @JsonIgnore
     private List<KitchenCrewEmployees> kitchenCrewTeamMembers;

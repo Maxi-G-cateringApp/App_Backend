@@ -19,6 +19,7 @@ public class DecorationTeam {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String teamName;
+    private int count;
     @OneToMany(mappedBy = "decorationTeam",cascade = CascadeType.ALL)
     @JsonIgnore
     private List<DecorationEmployees> decorationTeamMembers;
