@@ -22,5 +22,6 @@ public class ServingTeam {
     @OneToMany(mappedBy = "servingTeam",cascade = CascadeType.ALL)
     @JsonIgnore
     private List<ServingEmployees> servingTeamMembers;
+    private int count;
 
 }

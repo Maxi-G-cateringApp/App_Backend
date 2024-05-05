@@ -13,6 +13,7 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 @RestController
@@ -22,25 +23,26 @@ public class ChatController {
     private final ChatMessageService chatMessageService;
     private final ChatRoomService chatRoomService;
 
-
     @MessageMapping("/send-message")
     public void sentMessage(@Payload MessageReq message) throws JsonProcessingException {
-        System.out.println(message.getChatRoomName()+" chat room");
-        System.out.println(message.getContent()+"  content");
-        Message saved = chatMessageService.sendMessage(message);
-        String jsonMessage = new ObjectMapper().writeValueAsString(saved);
-        simpMessagingTemplate.convertAndSend("/topic/messages/"+message.getChatRoomName(),jsonMessage);
-    }
+        try{
+            Message saved = chatMessageService.sendMessage(message);
+            String jsonMessage = new ObjectMapper().writeValueAsString(saved);
+            simpMessagingTemplate.convertAndSend("/topic/messages/" + message.getChatRoomName(), jsonMessage);
 
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     @PostMapping("/get-messages")
     public List<Message> getMessages(@RequestParam("chatRoomName") String chatRoomName) {
         return chatMessageService.findChatRoom(chatRoomName);
-
     }
 
     @GetMapping("/chats")
-    public List<ChatRoomDTO>getChatRoomByAdmin(){
+    public List<ChatRoomDTO> getChatRoomByAdmin() {
         return chatRoomService.getAllChatRooms();
     }
 

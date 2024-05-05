@@ -7,4 +7,5 @@ public class ServingEmpDto {
 
     private String servingEmpName;
     private Integer servingTeamId;
+    private Long emp;
 }

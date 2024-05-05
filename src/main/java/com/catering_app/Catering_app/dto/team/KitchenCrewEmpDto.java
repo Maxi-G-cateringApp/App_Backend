@@ -7,4 +7,5 @@ public class KitchenCrewEmpDto {
 
     private String kitchenCrewEmpName;
     private Integer kitchenCrewTeamId;
+    private Long emp;
 }

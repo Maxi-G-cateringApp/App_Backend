@@ -6,15 +6,17 @@ import com.catering_app.Catering_app.model.Message;
 import com.catering_app.Catering_app.repository.ChatRoomRepository;
 import com.catering_app.Catering_app.repository.MessageRepository;
 import com.catering_app.Catering_app.repository.UserRepository;
+import com.sun.jdi.event.ExceptionEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -22,7 +24,6 @@ public class ChatMessageService {
 
     private final MessageRepository messageRepository;
     private final ChatRoomService chatRoomService;
-    private final UserRepository userRepository;
     private final ChatRoomRepository chatRoomRepository;
 
     public Message sendMessage(MessageReq message) {
@@ -41,6 +42,35 @@ public class ChatMessageService {
 
     }
 
+//    public Message sendMessage(MessageReq message) {
+//        System.out.println(message.getType()+"  type");
+//        Optional<ChatRoom> optionalChatRoom = chatRoomService.getChatRoom(message.getChatRoomName());
+//        if (optionalChatRoom.isPresent()) {
+//            ChatRoom chatRoom = optionalChatRoom.get();
+//            if ("file".equals(message.getType())){
+//                byte[] fileData = message.getContent().getBytes(StandardCharsets.UTF_8);
+//                return messageRepository.save(Message.builder()
+//                                .chatRoom(chatRoom)
+//                                .senderId(message.getSenderId())
+//                                .timeStamp(generateTimeStamp())
+//                                .fileData(fileData)
+//                                .fileType("image")
+//                                .fileName("image.jpg")
+//                        .build());
+//            }else {
+//                return messageRepository.save(Message.builder()
+//                        .chatRoom(chatRoom)
+//                        .content(message.getContent())
+//                        .senderId(message.getSenderId())
+//                        .timeStamp(generateTimeStamp())
+//                        .build());
+//            }
+//        } else {
+//            return null;
+//        }
+//
+//    }
+
     private String generateTimeStamp() {
         Instant i = Instant.now();
         String date = i.toString();
@@ -56,67 +86,18 @@ public class ChatMessageService {
             time += "0" + Integer.toString(minutes);
         }
         return date + "-" + time;
-
     }
-
-
-//    public List<Message> findChatMessages(UUID userId,UUID adminId){
-//        String user = userId.toString();
-//        String admin = adminId.toString();
-//        return messageRepository.findBySenderIdAndRecipientId(user,admin);
-//    }
-
-//    public List<Message> findChatRoom(String chatRoomName) {
-//        Optional<ChatRoom> optionalChatRoom = chatRoomRepository.findByChatRoomName(chatRoomName);
-//        if (optionalChatRoom.isPresent()) {
-//            return messageRepository.findByChatRoomId(optionalChatRoom.get().getId());
-//        } else {
-//            chatRoomService.createChatRoom(chatRoomName);
-//            return new ArrayList<>();
-//        }
-//    }
 
     public List<Message> findChatRoom(String chatRoomName) {
         synchronized (this) {
             Optional<ChatRoom> optionalChatRoom = chatRoomRepository.findByChatRoomName(chatRoomName);
             if (optionalChatRoom.isEmpty()) {
-                chatRoomService.createChatRoom(chatRoomName);
-                return new ArrayList<>();
+                    chatRoomService.createChatRoom(chatRoomName);
+                    return new ArrayList<>();
             } else {
                 return messageRepository.findByChatRoomId(optionalChatRoom.get().getId());
             }
         }
     }
 
-//    public List<Message> findChatRoom(String chatRoomName) {
-//        List<ChatRoom> chatRooms = chatRoomRepository.findByChatRoomName(chatRoomName);
-//        List<Message> messages = new ArrayList<>();
-//        if(chatRooms.isEmpty()) {
-//            chatRoomService.createChatRoom(chatRoomName);
-//        } else {
-//            for (ChatRoom chatRoom : chatRooms) {
-//                messages.addAll(messageRepository.findByChatRoomId(chatRoom.getId()));
-//            }
-//        }
-//        return messages;
-//    }
-
-
-//}
-//    public List<Message> findChatRoom(String chatRoomName) {
-//        Optional<ChatRoom> chatRooms = chatRoomRepository.findByChatRoomName(chatRoomName);
-//        List<Message> messages = new ArrayList<>();
-//
-//        if (chatRooms.isPresent()) {
-//            for (ChatRoom chatRoom : chatRooms.get()) {
-//                List<Message> roomMessages = messageRepository.findByChatRoomId(chatRoom.getId());
-//                messages.addAll(roomMessages);
-//            }
-//        } else {
-//            ChatRoom newChatRoom = chatRoomService.createChatRoom(chatRoomName);
-//            messages = messageRepository.findByChatRoomId(newChatRoom.getId());
-//        }
-//
-//        return messages;
-//    }
 }

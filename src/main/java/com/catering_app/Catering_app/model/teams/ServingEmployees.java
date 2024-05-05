@@ -1,5 +1,6 @@
 package com.catering_app.Catering_app.model.teams;
 
+import com.catering_app.Catering_app.model.Employee;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,9 +18,9 @@ public class ServingEmployees {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer servingEmpId;
-
-    private String servingEmpName;
-
+    @ManyToOne
+    @JoinColumn(name = "emp_id")
+    private Employee emp;
     @ManyToOne
     @JoinColumn(name = "serving_team_id")
     private ServingTeam servingTeam;

@@ -1,10 +1,13 @@
 package com.catering_app.Catering_app.service.teamServices.decorationEmployees;
 
 import com.catering_app.Catering_app.dto.team.DecorEmpDto;
+import com.catering_app.Catering_app.model.Employee;
 import com.catering_app.Catering_app.model.teams.DecorationEmployees;
 import com.catering_app.Catering_app.model.teams.DecorationTeam;
 import com.catering_app.Catering_app.repository.DecorationEmployeeRepository;
+import com.catering_app.Catering_app.service.employeeService.EmployeeService;
 import com.catering_app.Catering_app.service.teamServices.decorationTeam.DecorationTeamService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,27 +15,31 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class DecorationEmployeeServiceImpl implements DecorationEmployeeService{
 
-    @Autowired
-    private DecorationEmployeeRepository decorationEmployeeRepository;
-    @Autowired
-    private DecorationTeamService decorationTeamService;
+
+    private final DecorationEmployeeRepository decorationEmployeeRepository;
+    private final DecorationTeamService decorationTeamService;
+    private final EmployeeService employeeService;
+
 
     @Override
     public void addDecorationEmployees(DecorEmpDto decorEmpDto) {
+        Optional<Employee> optionalEmployee = employeeService.getEmployeeById(decorEmpDto.getEmp());
+        if (optionalEmployee.isEmpty()) {
+            throw new IllegalArgumentException("Employee not found");
+        }
+        Optional<DecorationTeam> optionalDecorationTeam = decorationTeamService.getDecorationTeamById(decorEmpDto.getDecorationTeamId());
+        DecorationTeam decorationTeam = optionalDecorationTeam.orElseThrow(() -> new IllegalArgumentException("Team not found"));
+
         DecorationEmployees decorationEmployees = new DecorationEmployees();
 
-        Optional<DecorationTeam> optionalDecorationTeam = decorationTeamService.getDecorationTeamById(decorEmpDto.getDecorationTeamId());
-        if (optionalDecorationTeam.isPresent()){
-            DecorationTeam decorationTeam = optionalDecorationTeam.get();
-            decorationEmployees.setDecorationEmpName(decorEmpDto.getDecorationEmpName());
+            decorationEmployees.setEmp(optionalEmployee.get());
             decorationEmployees.setDecorationTeam(decorationTeam);
+            int count = decorationTeam.getCount();
+            decorationTeam.setCount(count+1);
             decorationEmployeeRepository.save(decorationEmployees);
-        }else{
-            throw new RuntimeException("team not found");
-        }
-
 
     }
 
