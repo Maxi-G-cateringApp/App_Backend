@@ -7,12 +7,10 @@ import com.catering_app.Catering_app.model.teams.DecorationEmployees;
 import com.catering_app.Catering_app.model.teams.DecorationTeam;
 import com.catering_app.Catering_app.service.teamServices.decorationEmployees.DecorationEmployeeService;
 import com.catering_app.Catering_app.service.teamServices.decorationTeam.DecorationTeamService;
+import org.apache.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -47,4 +45,10 @@ public class DecorationTeamController {
         return ResponseEntity.ok(new ResponseDto(true,"success"));
 
     }
+    @DeleteMapping("/delete-dec_team")
+    public ResponseEntity<?>deleteDecorationTeam(@RequestParam Integer id){
+        decorationTeamService.deleteDecorationTeamById(id);
+        return ResponseEntity.ok(new ResponseDto(true,"deleted"));
+    }
+
 }

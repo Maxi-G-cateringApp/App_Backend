@@ -21,6 +21,12 @@ spring:
           client-id: "527124445285-2fo34e8jg723jaaemr4b0bnnq3jdoq8b.apps.googleusercontent.com"
           client_secret: "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"
 
+  cloudinary:
+    cloud_name: "dyb6t2awf"
+    api_key: "514813724911381"
+    api_secret: "a5RLuzKrUST7Ts-kIIxwMMBM0Dk"
+
+
   mail:
     properties:
       mail:

@@ -11,4 +11,6 @@ public interface ServingTeamService {
     ServingTeam addServingTeam(teamDto teamDto);
     Optional<ServingTeam>getServingTeamById(Integer id);
     List<ServingTeam> getAllServingTeam();
+    void deleteServingTeamById(Integer id);
+
 }

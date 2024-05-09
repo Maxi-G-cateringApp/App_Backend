@@ -13,4 +13,5 @@ public interface KitchenCrewService {
     KitchenCrew addKitchenCrewTeam(teamDto teamDto);
     Optional<KitchenCrew> getKitchenCrewTeamById(Integer id);
     List<KitchenCrew> getAllSKitchenCrewTeam();
+    void deleteKitchenCrewById(Integer id);
 }

@@ -32,4 +32,9 @@ public class DecorationTeamServiceImpl implements DecorationTeamService {
     public List<DecorationTeam> getAllDecorationTeam() {
         return decorationTeamRepository.findAll();
     }
+
+    @Override
+    public void deleteDecorationTeamById(Integer id) {
+        decorationTeamRepository.deleteById(id);
+    }
 }

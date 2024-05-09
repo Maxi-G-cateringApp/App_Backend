@@ -31,4 +31,9 @@ public class ServingTeamServiceImpl implements ServingTeamService {
     public List<ServingTeam> getAllServingTeam() {
         return servingTeamRepository.findAll();
     }
+
+    @Override
+    public void deleteServingTeamById(Integer id) {
+        servingTeamRepository.deleteById(id);
+    }
 }

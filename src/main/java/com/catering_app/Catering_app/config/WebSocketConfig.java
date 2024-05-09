@@ -31,16 +31,16 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
                 .withSockJS();
     }
 
-//    @Override
-//    public boolean configureMessageConverters(List<MessageConverter> messageConverters) {
-//         messageConverters.add(new ByteArrayMessageConverter());
-//           return true;
-//    }
-//
-//    @Override
-//    public void configureWebSocketTransport(WebSocketTransportRegistration registry) {
-//        registry.setMessageSizeLimit(1024 * 1024 * 1024);
-//        registry.setSendBufferSizeLimit(1024 * 1024 * 1024);
-//        registry.setSendTimeLimit(20000);
-//    }
+    @Override
+    public boolean configureMessageConverters(List<MessageConverter> messageConverters) {
+         messageConverters.add(new ByteArrayMessageConverter());
+           return true;
+    }
+
+    @Override
+    public void configureWebSocketTransport(WebSocketTransportRegistration registry) {
+        registry.setMessageSizeLimit(1024 * 1024 * 1024);
+        registry.setSendBufferSizeLimit(1024 * 1024 * 1024);
+        registry.setSendTimeLimit(20000);
+    }
 }

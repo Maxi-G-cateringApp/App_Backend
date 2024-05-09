@@ -9,10 +9,7 @@ import com.catering_app.Catering_app.service.teamServices.servingEmployees.Servi
 import com.catering_app.Catering_app.service.teamServices.servingTeam.ServingTeamService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -45,5 +42,10 @@ public class ServingTeamController {
         servingEmployeesService.addServingEmployees(servingEmpDto);
         return ResponseEntity.ok(new ResponseDto(true,"success"));
 
+    }
+    @DeleteMapping("/delete-serve_team")
+    public ResponseEntity<?>deleteServingTeam(@RequestParam Integer id){
+        servingTeamService.deleteServingTeamById(id);
+        return ResponseEntity.ok(new ResponseDto(true,"deleted"));
     }
 }

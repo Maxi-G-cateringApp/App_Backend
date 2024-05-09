@@ -2,18 +2,26 @@ package com.catering_app.Catering_app.service.employeeService;
 
 import com.catering_app.Catering_app.dto.EmployeeDto;
 import com.catering_app.Catering_app.model.Employee;
+import com.catering_app.Catering_app.model.teams.*;
+import com.catering_app.Catering_app.repository.DecorationEmployeeRepository;
 import com.catering_app.Catering_app.repository.EmployeeRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.catering_app.Catering_app.repository.KitchenCrewEmployeesRepository;
+import com.catering_app.Catering_app.repository.ServingEmployeesRepository;
+import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
-public class EmployeeServiceImpl implements EmployeeService{
+@RequiredArgsConstructor
+public class EmployeeServiceImpl implements EmployeeService {
 
-    @Autowired
-    private EmployeeRepository employeeRepository;
+    private final EmployeeRepository employeeRepository;
+    private final ServingEmployeesRepository servingEmployeesRepository;
+    private final KitchenCrewEmployeesRepository kitchenCrewEmployeesRepository;
+    private final DecorationEmployeeRepository decorationEmployeeRepository;
 
     @Override
     public Employee addEmployee(EmployeeDto employeeDto) {
@@ -27,6 +35,24 @@ public class EmployeeServiceImpl implements EmployeeService{
     @Override
     public List<Employee> getAllEmployees() {
         return employeeRepository.findAll();
+    }
+
+    @Override
+    public List<Employee> getEmployeesWithoutTeam() {
+        List<Employee> employeeList = employeeRepository.findAll();
+        List<Long> allEmpIdInTeams = getAllEmpIdInTeams();
+        return employeeList.stream().filter(employee -> !allEmpIdInTeams.contains(employee.getId())).collect(Collectors.toList());
+    }
+
+    @NotNull
+    private List<Long> getAllEmpIdInTeams() {
+        List<ServingEmployees> servingEmployeesList = servingEmployeesRepository.findAll();
+        List<KitchenCrewEmployees> kitchenCrewEmployeesList = kitchenCrewEmployeesRepository.findAll();
+        List<DecorationEmployees> decorationEmployeesList = decorationEmployeeRepository.findAll();
+        List<Long> allEmpIdInTeams = servingEmployeesList.stream().map(emp -> emp.getEmp().getId()).collect(Collectors.toList());
+        allEmpIdInTeams.addAll(kitchenCrewEmployeesList.stream().map(emp -> emp.getEmp().getId()).toList());
+        allEmpIdInTeams.addAll(decorationEmployeesList.stream().map(emp -> emp.getEmp().getId()).toList());
+        return allEmpIdInTeams;
     }
 
     @Override
