@@ -13,6 +13,7 @@ public interface DecorationTeamService {
     DecorationTeam addDecorationTeam(teamDto teamDto);
     Optional<DecorationTeam> getDecorationTeamById(Integer id);
     List<DecorationTeam> getAllDecorationTeam();
+    void deleteDecorationTeamById(Integer id);
 
 
 }

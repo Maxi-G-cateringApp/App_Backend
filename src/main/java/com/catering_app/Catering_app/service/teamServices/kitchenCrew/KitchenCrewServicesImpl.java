@@ -32,4 +32,9 @@ public class KitchenCrewServicesImpl implements KitchenCrewService{
     public List<KitchenCrew> getAllSKitchenCrewTeam() {
         return kitchenCrewRepository.findAll();
     }
+
+    @Override
+    public void deleteKitchenCrewById(Integer id) {
+        kitchenCrewRepository.deleteById(id);
+    }
 }

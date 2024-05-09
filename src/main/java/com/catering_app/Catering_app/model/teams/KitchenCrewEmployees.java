@@ -21,7 +21,7 @@ public class KitchenCrewEmployees {
     @ManyToOne
     @JoinColumn(name = "emp_id")
     private Employee emp;
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "kitchenCrew_team_id")
     private KitchenCrew kitchenCrew;
 }

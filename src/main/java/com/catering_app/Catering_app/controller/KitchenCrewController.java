@@ -9,10 +9,7 @@ import com.catering_app.Catering_app.service.teamServices.kitchenCrew.KitchenCre
 import com.catering_app.Catering_app.service.teamServices.kitchenCrewEmployees.KitchenCrewEmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -44,6 +41,12 @@ public class KitchenCrewController {
     @GetMapping("/kitchenCrew_emp")
     public ResponseEntity<List<KitchenCrewEmployees>> getAllKitchenCrewEmployees() {
         return ResponseEntity.ok(kitchenCrewEmployeeService.getAllKitchenCrewEmployees());
+    }
+
+    @DeleteMapping("/delete-kitchen_crew")
+    public ResponseEntity<?>deleteDecorationTeam(@RequestParam Integer id){
+        kitchenCrewService.deleteKitchenCrewById(id);
+        return ResponseEntity.ok(new ResponseDto(true,"deleted"));
     }
 
 

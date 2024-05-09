@@ -23,9 +23,5 @@ public class Message {
     private String content;
     private String timeStamp;
 
-    @Lob
-    private byte[] fileData;
-    private String fileType;
-    private String fileName;
 
 }

@@ -27,4 +27,9 @@ public class EmployeeController {
     public ResponseEntity<List<Employee>> getAllEmployees(){
         return ResponseEntity.ok(employeeService.getAllEmployees());
     }
+    @GetMapping("/employees/without-team")
+    public ResponseEntity<List<Employee>> getEmployeesWithoutTeam(){
+        return ResponseEntity.ok(employeeService.getEmployeesWithoutTeam());
+    }
+
 }

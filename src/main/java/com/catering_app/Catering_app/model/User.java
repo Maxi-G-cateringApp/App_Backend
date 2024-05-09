@@ -1,7 +1,6 @@
 package com.catering_app.Catering_app.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,6 +21,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+//@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class,property = "id")
 public class User implements UserDetails {
 
     @Id
@@ -43,12 +43,8 @@ public class User implements UserDetails {
 
     @OneToOne
     @JoinColumn(name = "image_id")
-    @JsonIgnore
+    @JsonManagedReference
     private UserProfileImage userProfileImage;
-
-
-
-
 
 
     @Override

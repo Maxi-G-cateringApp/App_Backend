@@ -5,13 +5,8 @@ import com.catering_app.Catering_app.model.ChatRoom;
 import com.catering_app.Catering_app.model.Message;
 import com.catering_app.Catering_app.repository.ChatRoomRepository;
 import com.catering_app.Catering_app.repository.MessageRepository;
-import com.catering_app.Catering_app.repository.UserRepository;
-import com.sun.jdi.event.ExceptionEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
@@ -32,8 +27,8 @@ public class ChatMessageService {
             ChatRoom chatRoom = optionalChatRoom.get();
             return messageRepository.save(Message.builder()
                     .chatRoom(chatRoom)
-                    .content(message.getContent())
                     .senderId(message.getSenderId())
+                    .content(message.getContent())
                     .timeStamp(generateTimeStamp())
                     .build());
         } else {
