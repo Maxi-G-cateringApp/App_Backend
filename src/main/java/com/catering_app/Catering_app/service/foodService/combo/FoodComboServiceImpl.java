@@ -39,32 +39,37 @@ public class FoodComboServiceImpl implements FoodComboService{
     }
     private boolean createFoodCombo(FoodComboDto foodComboDto, MultipartFile file) throws IOException {
         String filePath = F_UPLOAD_DIR + file.getOriginalFilename();
-
+        Optional<FoodItemCombos>optionalFoodItemCombos = foodItemComboRepository.findByComboName(foodComboDto.getComboName());
         Optional<Categories> optionalCategories = categoriesService.getCategoryById(foodComboDto.getCategoryId());
 
-        if (optionalCategories.isPresent()) {
-            try {
-            Categories category = optionalCategories.get();
-            FoodItemCombos foodItemCombo = getFoodItemCombos(foodComboDto);
-            foodItemCombo.setCategories(category);
+        if(optionalFoodItemCombos.isPresent()){
+            return false;
+        }else {
 
-            FoodComboImage foodComboImage = new FoodComboImage();
-                foodComboImage.setName(file.getOriginalFilename());
-                foodComboImage.setType(file.getContentType());
-                foodComboImage.setFilePath(filePath);
-                foodComboImage.setFoodItemCombo(foodItemCombo);
-                foodComboImageRepository.save(foodComboImage);
-                file.transferTo(new File(filePath));
+            if (optionalCategories.isPresent()) {
+                try {
+                    Categories category = optionalCategories.get();
+                    FoodItemCombos foodItemCombo = getFoodItemCombos(foodComboDto);
+                    foodItemCombo.setCategories(category);
 
-                foodItemCombo.setFoodComboImage(foodComboImage);
-                foodItemComboRepository.save(foodItemCombo);
-                return true;
-            } catch (Exception e) {
-                e.printStackTrace();
+                    FoodComboImage foodComboImage = new FoodComboImage();
+                    foodComboImage.setName(file.getOriginalFilename());
+                    foodComboImage.setType(file.getContentType());
+                    foodComboImage.setFilePath(filePath);
+                    foodComboImage.setFoodItemCombo(foodItemCombo);
+                    foodComboImageRepository.save(foodComboImage);
+                    file.transferTo(new File(filePath));
+
+                    foodItemCombo.setFoodComboImage(foodComboImage);
+                    foodItemComboRepository.save(foodItemCombo);
+                    return true;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return false;
+                }
+            } else {
                 return false;
             }
-        } else {
-            return false;
         }
     }
 

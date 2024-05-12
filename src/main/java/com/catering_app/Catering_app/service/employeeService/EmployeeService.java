@@ -5,6 +5,7 @@ import com.catering_app.Catering_app.model.Employee;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 public interface EmployeeService {
 
@@ -13,4 +14,5 @@ public interface EmployeeService {
     List<Employee> getEmployeesByExpertise(String expertise);
     Optional<Employee>getEmployeeById(Long id);
     List<Employee>getEmployeesWithoutTeam();
+    void deleteEmployeeById(Long id);
 }

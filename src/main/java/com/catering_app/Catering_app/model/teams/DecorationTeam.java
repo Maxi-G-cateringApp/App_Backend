@@ -23,4 +23,5 @@ public class DecorationTeam {
     @OneToMany(mappedBy = "decorationTeam",cascade = CascadeType.ALL)
     @JsonIgnore
     private List<DecorationEmployees> decorationTeamMembers;
+
 }

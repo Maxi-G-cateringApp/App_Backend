@@ -44,6 +44,11 @@ public class EmployeeServiceImpl implements EmployeeService {
         return employeeList.stream().filter(employee -> !allEmpIdInTeams.contains(employee.getId())).collect(Collectors.toList());
     }
 
+    @Override
+    public void deleteEmployeeById(Long id) {
+        employeeRepository.deleteById(id);
+    }
+
     @NotNull
     private List<Long> getAllEmpIdInTeams() {
         List<ServingEmployees> servingEmployeesList = servingEmployeesRepository.findAll();

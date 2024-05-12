@@ -21,7 +21,6 @@ public class ChatRoomService {
         String[] participants = chatRoomName.split("_");
         if(participants[0].equals(participants[1])) {
             throw new RuntimeException("Cannot create chat room with the same participants");
-
         }else{
             chatRoomRepository.save(ChatRoom.builder()
                     .chatRoomName(chatRoomName)

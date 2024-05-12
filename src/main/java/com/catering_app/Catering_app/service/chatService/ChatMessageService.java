@@ -34,37 +34,7 @@ public class ChatMessageService {
         } else {
             return null;
         }
-
     }
-
-//    public Message sendMessage(MessageReq message) {
-//        System.out.println(message.getType()+"  type");
-//        Optional<ChatRoom> optionalChatRoom = chatRoomService.getChatRoom(message.getChatRoomName());
-//        if (optionalChatRoom.isPresent()) {
-//            ChatRoom chatRoom = optionalChatRoom.get();
-//            if ("file".equals(message.getType())){
-//                byte[] fileData = message.getContent().getBytes(StandardCharsets.UTF_8);
-//                return messageRepository.save(Message.builder()
-//                                .chatRoom(chatRoom)
-//                                .senderId(message.getSenderId())
-//                                .timeStamp(generateTimeStamp())
-//                                .fileData(fileData)
-//                                .fileType("image")
-//                                .fileName("image.jpg")
-//                        .build());
-//            }else {
-//                return messageRepository.save(Message.builder()
-//                        .chatRoom(chatRoom)
-//                        .content(message.getContent())
-//                        .senderId(message.getSenderId())
-//                        .timeStamp(generateTimeStamp())
-//                        .build());
-//            }
-//        } else {
-//            return null;
-//        }
-//
-//    }
 
     private String generateTimeStamp() {
         Instant i = Instant.now();
@@ -87,12 +57,11 @@ public class ChatMessageService {
         synchronized (this) {
             Optional<ChatRoom> optionalChatRoom = chatRoomRepository.findByChatRoomName(chatRoomName);
             if (optionalChatRoom.isEmpty()) {
-                    chatRoomService.createChatRoom(chatRoomName);
-                    return new ArrayList<>();
+                chatRoomService.createChatRoom(chatRoomName);
+                return new ArrayList<>();
             } else {
                 return messageRepository.findByChatRoomId(optionalChatRoom.get().getId());
             }
         }
     }
-
 }
