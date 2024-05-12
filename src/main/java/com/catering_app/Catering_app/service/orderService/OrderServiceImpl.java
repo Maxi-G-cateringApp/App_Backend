@@ -8,6 +8,7 @@ import com.catering_app.Catering_app.repository.UserRepository;
 import com.catering_app.Catering_app.service.authService.AuthenticationService;
 import com.catering_app.Catering_app.service.eventService.EventService;
 import com.catering_app.Catering_app.service.foodService.combo.FoodComboService;
+import com.catering_app.Catering_app.service.notofications.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

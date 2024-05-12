@@ -36,15 +36,9 @@ public class AdminFoodItemController {
 
     @PostMapping("/add-combo")
     public ResponseEntity<ResponseDto> addComboItems(@RequestParam ("combo") String comboJson,
-                                                     @RequestPart("file") MultipartFile file,
-                                                     HttpServletRequest httpServletRequest) throws IOException {
+                                                     @RequestPart("file") MultipartFile file) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         FoodComboDto foodComboDto = mapper.readValue(comboJson, FoodComboDto.class);
-
-        String token = httpServletRequest.getHeader("Authorization").split(" ")[1];
-        if (jwtService.isTokenExpired(token)){
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }else{
             boolean addItem = foodComboService.addFoodCombo(foodComboDto,file);
             ResponseDto response;
             if (addItem){
@@ -53,12 +47,11 @@ public class AdminFoodItemController {
                 response = new ResponseDto(false,"add item success");
             }
             return ResponseEntity.ok(response);
-        }
+
     }
 
     @PostMapping("/add-item")
-    public ResponseEntity<?> addItems(@RequestBody FoodItemDto foodItemDto,
-                                                HttpServletRequest httpServletRequest) {
+    public ResponseEntity<?> addItems(@RequestBody FoodItemDto foodItemDto) {
 
         Optional<Items> item = foodItemService.findByName(foodItemDto.getItemName());
         if (item.isPresent()) {

@@ -28,7 +28,6 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "user_id")
     private UUID id;
-    private String googleId;
     private String name;
     private String phoneNumber;
     private String email;
@@ -40,6 +39,8 @@ public class User implements UserDetails {
     private Boolean active;
     private LocalDateTime registerDateTime;
     private boolean googleSignIn;
+    private boolean isPartner;
+
 
     @OneToOne
     @JoinColumn(name = "image_id")

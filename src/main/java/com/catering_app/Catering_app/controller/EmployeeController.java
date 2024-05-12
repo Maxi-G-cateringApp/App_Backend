@@ -1,14 +1,12 @@
 package com.catering_app.Catering_app.controller;
 
 import com.catering_app.Catering_app.dto.EmployeeDto;
+import com.catering_app.Catering_app.dto.ResponseDto;
 import com.catering_app.Catering_app.model.Employee;
 import com.catering_app.Catering_app.service.employeeService.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -30,6 +28,12 @@ public class EmployeeController {
     @GetMapping("/employees/without-team")
     public ResponseEntity<List<Employee>> getEmployeesWithoutTeam(){
         return ResponseEntity.ok(employeeService.getEmployeesWithoutTeam());
+    }
+
+    @DeleteMapping("/delete/emp")
+    public ResponseEntity<?>deleteEmpById(@RequestParam Long id){
+        employeeService.deleteEmployeeById(id);
+        return ResponseEntity.ok(new ResponseDto(true,"deleted"));
     }
 
 }

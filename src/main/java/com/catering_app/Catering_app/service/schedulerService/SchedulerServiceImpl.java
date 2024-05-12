@@ -41,15 +41,12 @@ public class SchedulerServiceImpl implements SchedulerService {
         }
     }
 
-    @Scheduled(cron = "0 0 0 * * *")
+    @Scheduled(cron = "0 0/3 * * * *")
     public void changeStatus() {
-        LocalDate today = LocalDate.now();
-        List<Order> orders = orderRepository.findByDate(today);
-        System.out.println(orders);
+        List<Order> orders = orderRepository.findAll();
         for (Order order : orders) {
-            if (order.getStatus() == Status.PROCESSING && order.getTransactionId()!=null) {
-                order.setStatus(Status.COMPLETED);
-                orderRepository.save(order);
+            if (order.getOrderedItems() == null || order.getUserLocation() == null) {
+                orderRepository.delete(order);
             }
         }
     }

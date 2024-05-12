@@ -29,7 +29,7 @@ import java.security.GeneralSecurityException;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.stream.Collectors;
+
 
 @Service
 public class AuthenticationServiceImpl implements AuthenticationService{
@@ -75,6 +75,7 @@ public class AuthenticationServiceImpl implements AuthenticationService{
         user.setRole(Role.USER);
         user.setActive(false);
         user.setGoogleSignIn(false);
+        user.setPartner(false);
         user.setRegisterDateTime(LocalDateTime.now());
         return user;
     }
@@ -156,9 +157,9 @@ public class AuthenticationServiceImpl implements AuthenticationService{
                         .active(payload.getEmailVerified())
                         .email(payload.getEmail())
                         .name((String) payload.get("given_name"))
-                        .googleId(payload.getSubject())
                         .googleSignIn(true)
                         .role(Role.USER)
+                        .isPartner(false)
                         .build());
                 String refreshToken = payload.getSubject();
                 String gToken = jwtService.generateToken(user);
@@ -178,7 +179,7 @@ public class AuthenticationServiceImpl implements AuthenticationService{
     @Override
     public List<User> getAllUsers() {
         return userRepository.findAll().stream().
-                filter(user->user.getRole().equals(Role.USER)).toList();
+                filter(user->user.getRole().equals(Role.USER) && !user.isPartner()).toList();
     }
 
     public User updateUser(UUID userId,UpdateDto updateUser){

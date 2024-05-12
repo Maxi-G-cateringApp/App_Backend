@@ -35,4 +35,5 @@ public class EmailUtil {
         mimeMessageHelper.setText(emailContent,true);
         javaMailSender.send(mimeMessage);
     }
+
 }
