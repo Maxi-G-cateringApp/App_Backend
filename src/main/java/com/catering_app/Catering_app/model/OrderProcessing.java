@@ -22,13 +22,10 @@ public class OrderProcessing {
     private Integer id;
     @ManyToOne
     private Order order;
-
     @ManyToOne
     private ServingTeam servingTeam;
-
     @ManyToOne
     private DecorationTeam decorationTeam;
-
     @ManyToOne
     private KitchenCrew kitchenCrew;
 }

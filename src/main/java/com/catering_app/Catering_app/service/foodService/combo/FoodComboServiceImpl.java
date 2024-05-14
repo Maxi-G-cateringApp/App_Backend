@@ -133,4 +133,9 @@ public class FoodComboServiceImpl implements FoodComboService{
            throw new RuntimeException("no item found");
        }
     }
+
+    @Override
+    public void save(FoodItemCombos foodItemCombos) {
+        foodItemComboRepository.save(foodItemCombos);
+    }
 }
