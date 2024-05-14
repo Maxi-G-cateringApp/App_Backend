@@ -42,20 +42,42 @@ public class OrderProcessServiceImpl implements OrderProcessService{
         
         OrderProcessing orderProcessing = new OrderProcessing();
         Optional<Order> optionalOrders = orderService.getOrderById(orderProcessDto.getOrderId());
-        Optional<ServingTeam> optionalServingTeam = servingTeamService.getServingTeamById(orderProcessDto.getServingTeamId());
-        Optional<DecorationTeam> optionalDecorationTeam = decorationTeamService.getDecorationTeamById(orderProcessDto.getDecorationTeamId());
-        Optional<KitchenCrew>optionalKitchenCrew = kitchenCrewService.getKitchenCrewTeamById(orderProcessDto.getKitchenCrewId());
+//        Optional<ServingTeam> optionalServingTeam = servingTeamService.getServingTeamById(orderProcessDto.getServingTeamId());
+//        Optional<DecorationTeam> optionalDecorationTeam = decorationTeamService.getDecorationTeamById(orderProcessDto.getDecorationTeamId());
+//        Optional<KitchenCrew>optionalKitchenCrew = kitchenCrewService.getKitchenCrewTeamById(orderProcessDto.getKitchenCrewId());
 
 
         Order order = optionalOrders.orElseThrow(() -> new NoSuchElementException("Order not found"));
-        ServingTeam servingTeam = optionalServingTeam.orElseThrow(() -> new NoSuchElementException("Serving team not found"));
-        DecorationTeam decorationTeam = optionalDecorationTeam.orElseThrow(() -> new NoSuchElementException("Decoration team not found"));
-        KitchenCrew kitchenCrew = optionalKitchenCrew.orElseThrow(() -> new NoSuchElementException("Kitchen crew not found"));
+//        ServingTeam servingTeam = optionalServingTeam.orElseThrow(() -> new NoSuchElementException("Serving team not found"));
+//        DecorationTeam decorationTeam = optionalDecorationTeam.orElseThrow(() -> new NoSuchElementException("Decoration team not found"));
+//        KitchenCrew kitchenCrew = optionalKitchenCrew.orElseThrow(() -> new NoSuchElementException("Kitchen crew not found"));
 
+        if (orderProcessDto.getServingTeamId() != null) {
+            Optional<ServingTeam> optionalServingTeam = servingTeamService.getServingTeamById(orderProcessDto.getServingTeamId());
+            if (optionalServingTeam.isEmpty()) {
+                throw new NoSuchElementException("Serving team not found");
+            }
+            orderProcessing.setServingTeam(optionalServingTeam.get());
+        }
+
+        if (orderProcessDto.getDecorationTeamId() != null) {
+            Optional<DecorationTeam> optionalDecorationTeam = decorationTeamService.getDecorationTeamById(orderProcessDto.getDecorationTeamId());
+            if (optionalDecorationTeam.isEmpty()) {
+                throw new NoSuchElementException("Decoration team not found");
+            }
+            orderProcessing.setDecorationTeam(optionalDecorationTeam.get());
+        }
+
+        if (orderProcessDto.getKitchenCrewId() != null) {
+            Optional<KitchenCrew> optionalKitchenCrew = kitchenCrewService.getKitchenCrewTeamById(orderProcessDto.getKitchenCrewId());
+            if (optionalKitchenCrew.isEmpty()) {
+                throw new NoSuchElementException("Kitchen crew not found");
+            }
+            orderProcessing.setKitchenCrew(optionalKitchenCrew.get());
+        }
         orderProcessing.setOrder(order);
-        orderProcessing.setServingTeam(servingTeam);
-        orderProcessing.setDecorationTeam(decorationTeam);
-        orderProcessing.setKitchenCrew(kitchenCrew);
+
+     
         order.setStatus(Status.PROCESSING);
         orderRepository.save(order);
         return orderProcessingRepository.save(orderProcessing);

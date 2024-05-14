@@ -8,12 +8,10 @@ import com.catering_app.Catering_app.repository.UserRepository;
 import com.catering_app.Catering_app.service.authService.AuthenticationService;
 import com.catering_app.Catering_app.service.eventService.EventService;
 import com.catering_app.Catering_app.service.foodService.combo.FoodComboService;
-import com.catering_app.Catering_app.service.notofications.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -88,9 +86,12 @@ public class OrderServiceImpl implements OrderService {
         Optional<Order> optionalOrders = getOrderById(orderId);
         if (optionalOrders.isPresent()) {
             Order order = optionalOrders.get();
-
             for (OrderedCombos combo : order.getOrderedCombos()) {
-                comboPrice += combo.getFoodCombos().getComboPrice();
+                if(combo.getFoodCombos().getOffer().isEnabled()){
+                    comboPrice += combo.getFoodCombos().getComboPrice();
+                }else{
+                    comboPrice+= combo.getFoodCombos().getOfferPrice();
+                }
             }
             for (OrderedItems items : order.getOrderedItems()) {
                 itemPrice += items.getFoodItems().getItemPrice();

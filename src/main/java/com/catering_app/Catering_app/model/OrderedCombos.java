@@ -16,7 +16,7 @@ public class OrderedCombos {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "combo_id")
     private FoodItemCombos foodCombos;
     @ManyToOne

@@ -3,7 +3,9 @@ package com.catering_app.Catering_app.service.foodService.items;
 import com.catering_app.Catering_app.dto.FoodItemDto;
 import com.catering_app.Catering_app.model.Categories;
 import com.catering_app.Catering_app.model.Items;
+import com.catering_app.Catering_app.model.OrderedItems;
 import com.catering_app.Catering_app.repository.ItemsRepository;
+import com.catering_app.Catering_app.repository.OrderedItemRepository;
 import com.catering_app.Catering_app.service.categoryService.CategoriesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,6 +20,9 @@ public class FoodItemServiceImpl implements FoodItemService {
     private ItemsRepository itemsRepository;
     @Autowired
     private CategoriesService categoriesService;
+    @Autowired
+    private OrderedItemRepository orderedItemRepository;
+
 
     @Override
     public boolean addFoodItem(FoodItemDto fooItemDto) {
@@ -53,6 +58,9 @@ public class FoodItemServiceImpl implements FoodItemService {
 
     @Override
     public void deleteItemById(Integer id) {
+        List<OrderedItems>orderedItemsList = orderedItemRepository.findByFoodItems_Id(id);
+        System.out.println(orderedItemsList+"  ordered list");
+        orderedItemRepository.deleteAll(orderedItemsList);
         itemsRepository.deleteById(id);
     }
 

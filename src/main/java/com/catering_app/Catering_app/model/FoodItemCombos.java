@@ -20,6 +20,7 @@ public class FoodItemCombos {
     private String comboName;
     private String description;
     private Float comboPrice;
+    private Float offerPrice;
 
     @ManyToOne
     @JoinColumn(name = "category_id",referencedColumnName = "category_id")
@@ -30,5 +31,9 @@ public class FoodItemCombos {
     @JoinColumn(name = "image_id")
     @JsonIgnore
     private FoodComboImage foodComboImage;
+
+    @OneToOne
+    @JoinColumn(name = "offer_id")
+    private Offer offer;
 
 }

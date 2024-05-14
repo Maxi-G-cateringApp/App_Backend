@@ -17,4 +17,6 @@ public interface FoodComboService {
     boolean editFoodCombo(Integer id, FoodComboDto foodComboDto);
     void deleteComboById(Integer id);
 
+    void save(FoodItemCombos foodItemCombos);
+
 }

@@ -1,4 +1,4 @@
-package com.catering_app.Catering_app.service.notofications;
+package com.catering_app.Catering_app.service.notifications;
 
 import com.catering_app.Catering_app.model.Notifications;
 import lombok.RequiredArgsConstructor;

@@ -19,7 +19,7 @@ public class Items {
     private Integer id;
     private String itemName;
     private Float itemPrice;
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "category_id",referencedColumnName = "category_id")
     @JsonIgnore
     private Categories categories;
