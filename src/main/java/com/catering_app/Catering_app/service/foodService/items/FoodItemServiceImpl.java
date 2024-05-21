@@ -87,11 +87,13 @@ public class FoodItemServiceImpl implements FoodItemService {
 
     @Override
     public boolean editFoodItem(Integer id, FoodItemDto foodItemDto) {
-
         Optional<Items> optionalFoodItem = itemsRepository.findById(id);
         if (optionalFoodItem.isPresent()) {
             Items foodItem = optionalFoodItem.get();
-//            foodItem.setCategories(foodItemDto.getCategory());
+            Optional<Items>existingItem = itemsRepository.findByItemName(foodItemDto.getItemName());
+            if (existingItem.isPresent() && !existingItem.get().getId().equals(id)){
+                return false;
+            }
             foodItem.setItemName(foodItemDto.getItemName());
             foodItem.setItemPrice(foodItemDto.getItemPrice());
             itemsRepository.save(foodItem);

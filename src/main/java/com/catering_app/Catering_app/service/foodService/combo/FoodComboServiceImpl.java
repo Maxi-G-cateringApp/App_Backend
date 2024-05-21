@@ -7,6 +7,9 @@ import com.catering_app.Catering_app.model.FoodItemCombos;
 import com.catering_app.Catering_app.repository.FoodComboImageRepository;
 import com.catering_app.Catering_app.repository.FoodItemComboRepository;
 import com.catering_app.Catering_app.service.categoryService.CategoriesService;
+import com.sun.jdi.request.DuplicateRequestException;
+import jakarta.persistence.EntityExistsException;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,8 +20,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class FoodComboServiceImpl implements FoodComboService{
-
+public class FoodComboServiceImpl implements FoodComboService {
 
 
     @Autowired
@@ -31,20 +33,21 @@ public class FoodComboServiceImpl implements FoodComboService{
 
     @Override
     public boolean addFoodCombo(FoodComboDto foodComboDto, MultipartFile file) throws IOException {
-        if(foodComboDto != null){
-            return createFoodCombo(foodComboDto,file);
-        }else {
+        if (foodComboDto != null) {
+            return createFoodCombo(foodComboDto, file);
+        } else {
             return false;
         }
     }
+
     private boolean createFoodCombo(FoodComboDto foodComboDto, MultipartFile file) throws IOException {
         String filePath = F_UPLOAD_DIR + file.getOriginalFilename();
-        Optional<FoodItemCombos>optionalFoodItemCombos = foodItemComboRepository.findByComboName(foodComboDto.getComboName());
+        Optional<FoodItemCombos> optionalFoodItemCombos = foodItemComboRepository.findByComboName(foodComboDto.getComboName());
         Optional<Categories> optionalCategories = categoriesService.getCategoryById(foodComboDto.getCategoryId());
 
-        if(optionalFoodItemCombos.isPresent()){
+        if (optionalFoodItemCombos.isPresent()) {
             return false;
-        }else {
+        } else {
 
             if (optionalCategories.isPresent()) {
                 try {
@@ -84,18 +87,24 @@ public class FoodComboServiceImpl implements FoodComboService{
 
     @Override
     public boolean editFoodCombo(Integer id, FoodComboDto foodComboDto) {
-        Optional<FoodItemCombos> optionalFoodCombo = foodItemComboRepository.findById(id);
-        if (optionalFoodCombo.isPresent()) {
-            FoodItemCombos foodItemCombo = optionalFoodCombo.get();
-            foodItemCombo.setComboName(foodComboDto.getComboName());
-            foodItemCombo.setDescription(foodComboDto.getDescription());
-            foodItemCombo.setComboPrice(foodComboDto.getComboPrice());
-            foodItemComboRepository.save(foodItemCombo);
-            return true;
+        Optional<FoodItemCombos> optionalFoodItemCombo = foodItemComboRepository.findById(id);
+        if (optionalFoodItemCombo.isPresent()) {
+            FoodItemCombos foodItemCombo = optionalFoodItemCombo.get();
+
+            Optional<FoodItemCombos>existingCombo = foodItemComboRepository.findByComboName(foodComboDto.getComboName());
+            if(existingCombo.isPresent() && !existingCombo.get().getId().equals(id)){
+                return false;
+            }
+                foodItemCombo.setComboName(foodComboDto.getComboName());
+                foodItemCombo.setDescription(foodComboDto.getDescription());
+                foodItemCombo.setComboPrice(foodComboDto.getComboPrice());
+                foodItemComboRepository.save(foodItemCombo);
+                return true;
         } else {
             return false;
         }
     }
+
     @Override
     public List<FoodItemCombos> getAllCombos() {
         return foodItemComboRepository.findAll();
@@ -104,14 +113,14 @@ public class FoodComboServiceImpl implements FoodComboService{
     @Override
     public List<FoodItemCombos> getCombosByCategoryId(Integer id) {
         Optional<Categories> optionalCategories = categoriesService.findById(id);
-        if (optionalCategories.isPresent()){
+        if (optionalCategories.isPresent()) {
             Categories category = optionalCategories.get();
-            if(category.getCategoriesName().equals("All")){
+            if (category.getCategoriesName().equals("All")) {
                 return foodItemComboRepository.findAll();
-            }else {
+            } else {
                 return foodItemComboRepository.findFoodCombosByCategories(category);
             }
-        }else {
+        } else {
             return null;
         }
     }
@@ -123,15 +132,15 @@ public class FoodComboServiceImpl implements FoodComboService{
 
     @Override
     public void deleteComboById(Integer id) {
-       Optional<FoodItemCombos> optionalFoodItemCombos = foodItemComboRepository.findById(id);
-       if (optionalFoodItemCombos.isPresent()){
-           FoodItemCombos foodItemCombo = optionalFoodItemCombos.get();
-           FoodComboImage foodComboImage = foodItemCombo.getFoodComboImage();
-           foodComboImageRepository.delete(foodComboImage);
-           foodItemComboRepository.delete(foodItemCombo);
-       }else {
-           throw new RuntimeException("no item found");
-       }
+        Optional<FoodItemCombos> optionalFoodItemCombos = foodItemComboRepository.findById(id);
+        if (optionalFoodItemCombos.isPresent()) {
+            FoodItemCombos foodItemCombo = optionalFoodItemCombos.get();
+            FoodComboImage foodComboImage = foodItemCombo.getFoodComboImage();
+            foodComboImageRepository.delete(foodComboImage);
+            foodItemComboRepository.delete(foodItemCombo);
+        } else {
+            throw new RuntimeException("no item found");
+        }
     }
 
     @Override

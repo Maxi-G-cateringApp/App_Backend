@@ -1,10 +1,11 @@
 package com.catering_app.Catering_app.model;
 
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.cglib.core.Local;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -36,8 +37,8 @@ public class Order {
     @ManyToOne
     Events events;
 
-    private Date date;
-    private Date orderDate;
+    private LocalDate date;
+    private LocalDate orderDate;
     String timeFrom;
     String timeTo;
     private Integer peopleCount;

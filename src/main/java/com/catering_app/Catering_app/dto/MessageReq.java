@@ -11,5 +11,5 @@ public class MessageReq {
     private String senderId;
     private String t_stamp;
     private String type;
-    private MultipartFile file;
+//    private MultipartFile file;
 }

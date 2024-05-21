@@ -43,4 +43,21 @@ public class EventServiceImpl implements EventService{
     public Optional<Events> getEventById(Integer id) {
         return eventRepository.findById(id);
     }
+
+    @Override
+    public boolean editEvent(Integer id, EventDto eventDto) {
+        Optional<Events> optionalEvents = eventRepository.findById(id);
+        if (optionalEvents.isPresent()){
+            Events event = optionalEvents.get();
+
+            Optional<Events> existingEvent = eventRepository.findByEventName(eventDto.getEventName());
+            if (existingEvent.isPresent() && ! existingEvent.get().getId().equals(id)){
+                return false;
+            }
+            event.setEventName(eventDto.getEventName());
+            eventRepository.save(event);
+            return true;
+        }
+        return false;
+    }
 }

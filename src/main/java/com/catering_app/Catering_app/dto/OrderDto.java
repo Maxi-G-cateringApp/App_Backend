@@ -4,7 +4,9 @@ import com.catering_app.Catering_app.model.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.cglib.core.Local;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -19,7 +21,7 @@ public class OrderDto {
     private List<FoodItemCombos> foodCombos;
     private List<Items> foodItems;
     private Integer eventId;
-    private Date date;
+    private LocalDate date;
     private Integer peopleCount;
     private Venue venue;
     private String timeFrom;
