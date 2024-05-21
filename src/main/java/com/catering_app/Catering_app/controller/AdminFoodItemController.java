@@ -71,16 +71,24 @@ public class AdminFoodItemController {
     @PutMapping("/edit-combo")
     public ResponseEntity<ResponseDto>editCombo(@RequestParam Integer id,
                                                 @RequestBody FoodComboDto foodComboDto){
-        foodComboService.editFoodCombo(id,foodComboDto);
-        return ResponseEntity.ok(new ResponseDto(true,"edit success"));
-
+            boolean response = foodComboService.editFoodCombo(id,foodComboDto);
+            if(response){
+                return ResponseEntity.ok(new ResponseDto(true,"edit success"));
+            }else{
+                return ResponseEntity.ok(new ResponseDto(false,"something Wrong"));
+            }
     }
 
     @PutMapping("/edit-item")
     public ResponseEntity<ResponseDto>editItem(@RequestParam Integer id,
                                                 @RequestBody FoodItemDto foodItemDto){
-        foodItemService.editFoodItem(id,foodItemDto);
-        return ResponseEntity.ok(new ResponseDto(true,"edit success"));
+        boolean response = foodItemService.editFoodItem(id,foodItemDto);
+        if (response){
+            return ResponseEntity.ok(new ResponseDto(true,"edit success"));
+        }else{
+            return ResponseEntity.ok(new ResponseDto(false,"something Wrong"));
+        }
+
 
     }
 

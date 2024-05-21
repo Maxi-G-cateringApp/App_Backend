@@ -13,4 +13,6 @@ public interface EventService {
     Optional<Events>findByEventName(String eventName);
     void deleteEvent(Integer id);
     Optional<Events> getEventById(Integer id);
+    boolean editEvent(Integer id, EventDto eventDto);
+
 }

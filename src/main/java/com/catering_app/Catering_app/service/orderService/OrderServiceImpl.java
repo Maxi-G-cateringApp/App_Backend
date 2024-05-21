@@ -11,6 +11,7 @@ import com.catering_app.Catering_app.service.foodService.combo.FoodComboService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.*;
 
 @Service
@@ -69,7 +70,7 @@ public class OrderServiceImpl implements OrderService {
         order.setVenue(orderDto.getVenue());
         order.setPeopleCount(orderDto.getPeopleCount());
         order.setDate(orderDto.getDate());
-        order.setOrderDate(new Date(System.currentTimeMillis()));
+        order.setOrderDate(LocalDate.now());
         order.setStatus(Status.PENDING);
         order.setTimeFrom(orderDto.getTimeFrom());
         order.setTimeTo(orderDto.getTimeTo());
@@ -87,10 +88,13 @@ public class OrderServiceImpl implements OrderService {
         if (optionalOrders.isPresent()) {
             Order order = optionalOrders.get();
             for (OrderedCombos combo : order.getOrderedCombos()) {
-                if(combo.getFoodCombos().getOffer().isEnabled()){
+                System.out.println(combo.getFoodCombos().getOffer().isEnabled() +" offer ");
+                if(!combo.getFoodCombos().getOffer().isEnabled()){
                     comboPrice += combo.getFoodCombos().getComboPrice();
+                    System.out.println(comboPrice + " combo price if");
                 }else{
                     comboPrice+= combo.getFoodCombos().getOfferPrice();
+                    System.out.println(comboPrice + " combo price else");
                 }
             }
             for (OrderedItems items : order.getOrderedItems()) {
@@ -111,7 +115,6 @@ public class OrderServiceImpl implements OrderService {
 
         UserLocation userLocation = getUserLocation(locationDto);
         Order order = getOrderById(locationDto.getOrderId()).get();
-//        userLocation.setOrder(order);
         order.setUserLocation(userLocation);
         userLocationRepository.save(userLocation);
     }

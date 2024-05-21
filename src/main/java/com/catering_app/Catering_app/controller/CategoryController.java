@@ -4,6 +4,7 @@ import com.catering_app.Catering_app.dto.CategoriesDto;
 import com.catering_app.Catering_app.dto.ResponseDto;
 import com.catering_app.Catering_app.model.Categories;
 import com.catering_app.Catering_app.service.categoryService.CategoriesService;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -38,6 +39,26 @@ public class CategoryController {
     public ResponseEntity<ResponseDto>deleteCombo(@RequestParam Integer id){
         categoriesService.deleteCategoryById(id);
         return  ResponseEntity.ok(new ResponseDto(true,"delete success"));
+    }
+    @GetMapping("/get/category")
+    public ResponseEntity<Categories>getCategoryById(@RequestParam Integer id){
+        Optional<Categories>optionalCategories=categoriesService.getCategoryById(id);
+        if (optionalCategories.isPresent()){
+            return ResponseEntity.ok(optionalCategories.get());
+        }else{
+            throw new EntityNotFoundException();
+        }
+    }
+
+    @PutMapping("/edit/category")
+    public ResponseEntity<ResponseDto>editCombo(@RequestParam Integer id,
+                                                @RequestBody CategoriesDto categoriesDto){
+        boolean response = categoriesService.editCategory(id,categoriesDto);
+        if (response){
+            return ResponseEntity.ok(new ResponseDto(true,"success"));
+        }else {
+            return ResponseEntity.ok(new ResponseDto(false, "something wrong"));
+        }
     }
 
 

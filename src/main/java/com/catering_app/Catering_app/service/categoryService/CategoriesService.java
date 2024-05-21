@@ -17,4 +17,5 @@ public interface CategoriesService {
 
     Optional<Categories> findById(Integer id);
 
+    boolean editCategory(Integer id,CategoriesDto categoriesDto);
 }

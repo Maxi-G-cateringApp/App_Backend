@@ -41,7 +41,7 @@ public class SchedulerServiceImpl implements SchedulerService {
         }
     }
 
-    @Scheduled(cron = "0 0/3 * * * *")
+    @Scheduled(cron = "0 0/10 * * * *")
     public void changeStatus() {
         List<Order> orders = orderRepository.findAll();
         for (Order order : orders) {

@@ -36,6 +36,21 @@ public class ChatMessageService {
         }
     }
 
+
+
+
+    public List<Message> findChatRoom(String chatRoomName) {
+        synchronized (this) {
+            Optional<ChatRoom> optionalChatRoom = chatRoomRepository.findByChatRoomName(chatRoomName);
+            if (optionalChatRoom.isEmpty()) {
+                chatRoomService.createChatRoom(chatRoomName);
+                return new ArrayList<>();
+            } else {
+                return messageRepository.findByChatRoomId(optionalChatRoom.get().getId());
+            }
+        }
+    }
+
     private String generateTimeStamp() {
         Instant i = Instant.now();
         String date = i.toString();
@@ -51,17 +66,5 @@ public class ChatMessageService {
             time += "0" + Integer.toString(minutes);
         }
         return date + "-" + time;
-    }
-
-    public List<Message> findChatRoom(String chatRoomName) {
-        synchronized (this) {
-            Optional<ChatRoom> optionalChatRoom = chatRoomRepository.findByChatRoomName(chatRoomName);
-            if (optionalChatRoom.isEmpty()) {
-                chatRoomService.createChatRoom(chatRoomName);
-                return new ArrayList<>();
-            } else {
-                return messageRepository.findByChatRoomId(optionalChatRoom.get().getId());
-            }
-        }
     }
 }

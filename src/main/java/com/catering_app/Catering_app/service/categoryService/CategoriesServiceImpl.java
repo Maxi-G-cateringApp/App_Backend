@@ -51,4 +51,22 @@ public class CategoriesServiceImpl implements CategoriesService{
     public Optional<Categories> findById(Integer id) {
         return categoriesRepository.findById(id);
     }
+
+    @Override
+    public boolean editCategory(Integer id,CategoriesDto categoriesDto) {
+        Optional<Categories>optionalCategories = categoriesRepository.findById(id);
+        if (optionalCategories.isPresent()){
+            Categories category = optionalCategories.get();
+
+            Optional<Categories> existingCategory = categoriesRepository.findByCategoriesName(categoriesDto.getCategoriesName());
+            if (existingCategory.isPresent() && !existingCategory.get().getId().equals(id)){
+                return false;
+            }
+            category.setCategoriesName(categoriesDto.getCategoriesName());
+            categoriesRepository.save(category);
+            return true;
+        }else{
+            return false;
+        }
+    }
 }
