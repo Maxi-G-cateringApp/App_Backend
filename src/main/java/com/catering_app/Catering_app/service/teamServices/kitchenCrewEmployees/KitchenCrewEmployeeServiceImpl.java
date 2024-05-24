@@ -1,16 +1,14 @@
 package com.catering_app.Catering_app.service.teamServices.kitchenCrewEmployees;
 
 import com.catering_app.Catering_app.dto.team.KitchenCrewEmpDto;
-import com.catering_app.Catering_app.dto.team.teamDto;
 import com.catering_app.Catering_app.model.Employee;
 import com.catering_app.Catering_app.model.teams.KitchenCrew;
 import com.catering_app.Catering_app.model.teams.KitchenCrewEmployees;
-import com.catering_app.Catering_app.model.teams.ServingTeam;
+import com.catering_app.Catering_app.model.teams.ServingEmployees;
 import com.catering_app.Catering_app.repository.KitchenCrewEmployeesRepository;
 import com.catering_app.Catering_app.service.employeeService.EmployeeService;
 import com.catering_app.Catering_app.service.teamServices.kitchenCrew.KitchenCrewService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -45,5 +43,10 @@ public class KitchenCrewEmployeeServiceImpl implements KitchenCrewEmployeeServic
     @Override
     public List<KitchenCrewEmployees> getAllKitchenCrewEmployees() {
         return kitchenCrewEmployeesRepository.findAll();
+    }
+
+    @Override
+    public List<KitchenCrewEmployees> getAllKitchenCrewsByTeamId(Integer id) {
+        return kitchenCrewEmployeesRepository.getKitchenCrewsByKitchenCrewId(id);
     }
 }

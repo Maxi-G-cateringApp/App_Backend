@@ -2,12 +2,11 @@ package com.catering_app.Catering_app.controller;
 
 import com.catering_app.Catering_app.dto.ResponseDto;
 import com.catering_app.Catering_app.dto.team.DecorEmpDto;
-import com.catering_app.Catering_app.dto.team.teamDto;
+import com.catering_app.Catering_app.dto.team.TeamDto;
 import com.catering_app.Catering_app.model.teams.DecorationEmployees;
 import com.catering_app.Catering_app.model.teams.DecorationTeam;
 import com.catering_app.Catering_app.service.teamServices.decorationEmployees.DecorationEmployeeService;
 import com.catering_app.Catering_app.service.teamServices.decorationTeam.DecorationTeamService;
-import org.apache.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,7 +24,7 @@ public class DecorationTeamController {
 
 
     @PostMapping("/add/decor_team")
-    public ResponseEntity<DecorationTeam> addTeam(@RequestBody teamDto teamDto){
+    public ResponseEntity<DecorationTeam> addTeam(@RequestBody TeamDto teamDto){
         return ResponseEntity.ok(decorationTeamService.addDecorationTeam(teamDto));
     }
 
@@ -49,6 +48,11 @@ public class DecorationTeamController {
     public ResponseEntity<?>deleteDecorationTeam(@RequestParam Integer id){
         decorationTeamService.deleteDecorationTeamById(id);
         return ResponseEntity.ok(new ResponseDto(true,"deleted"));
+    }
+
+    @GetMapping("/get/dec-emp")
+    public ResponseEntity<List<DecorationEmployees>> getDecorationEmployeesBYTeam(@RequestParam Integer id){
+        return ResponseEntity.ok(decorationEmployeeService.getDecorationEmpByDecorationTeamId(id));
     }
 
 }

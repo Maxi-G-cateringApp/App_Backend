@@ -2,33 +2,30 @@ package com.catering_app.Catering_app.service.orderService;
 
 import com.catering_app.Catering_app.dto.*;
 import com.catering_app.Catering_app.model.*;
+import com.catering_app.Catering_app.repository.NotificationRepository;
 import com.catering_app.Catering_app.repository.OrderRepository;
 import com.catering_app.Catering_app.repository.UserLocationRepository;
 import com.catering_app.Catering_app.repository.UserRepository;
 import com.catering_app.Catering_app.service.authService.AuthenticationService;
 import com.catering_app.Catering_app.service.eventService.EventService;
-import com.catering_app.Catering_app.service.foodService.combo.FoodComboService;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.*;
 
 @Service
+@RequiredArgsConstructor
 public class OrderServiceImpl implements OrderService {
 
-    @Autowired
-    private AuthenticationService authenticationService;
-    @Autowired
-    private FoodComboService foodComboService;
-    @Autowired
-    private OrderRepository orderRepository;
-    @Autowired
-    private UserLocationRepository userLocationRepository;
-    @Autowired
-    private EventService eventService;
-    @Autowired
-    private UserRepository userRepository;
+    private final AuthenticationService authenticationService;
+    private final NotificationRepository notificationRepository;
+    private final OrderRepository orderRepository;
+    private final UserLocationRepository userLocationRepository;
+    private final EventService eventService;
+    private final UserRepository userRepository;
+
 
 
 
@@ -55,15 +52,26 @@ public class OrderServiceImpl implements OrderService {
                         orderedItems.setOrder(order);
                         return orderedItems;
                     }).toList();
-            Events event = eventService.getEventById(orderDto.getEventId()).get();
-            order.setEvents(event);
+            Optional<Events> optionalEvents = eventService.getEventById(orderDto.getEventId());
+            optionalEvents.ifPresent(order::setEvents);
             order.setOrderedCombos(OrderedCombosList);
             order.setOrderedItems(orderedItemsList);
             orderRepository.save(order);
         } else {
-            throw new RuntimeException();
+            throw new EntityNotFoundException();
         }
+        sendNotification(order);
         return new OrderResponse(order.getId());
+    }
+
+    private void sendNotification(Order order) {
+        notificationRepository.save(Notifications
+                .builder()
+                        .message("new order received "+ order.getDate())
+                        .order(order)
+                        .date(LocalDate.now())
+                        .isOpen(false)
+                .build());
     }
 
     private static void createOrder(OrderDto orderDto, Order order) {
@@ -87,16 +95,7 @@ public class OrderServiceImpl implements OrderService {
         Optional<Order> optionalOrders = getOrderById(orderId);
         if (optionalOrders.isPresent()) {
             Order order = optionalOrders.get();
-            for (OrderedCombos combo : order.getOrderedCombos()) {
-                System.out.println(combo.getFoodCombos().getOffer().isEnabled() +" offer ");
-                if(!combo.getFoodCombos().getOffer().isEnabled()){
-                    comboPrice += combo.getFoodCombos().getComboPrice();
-                    System.out.println(comboPrice + " combo price if");
-                }else{
-                    comboPrice+= combo.getFoodCombos().getOfferPrice();
-                    System.out.println(comboPrice + " combo price else");
-                }
-            }
+            comboPrice = getComboPrice(comboPrice, order);
             for (OrderedItems items : order.getOrderedItems()) {
                 itemPrice += items.getFoodItems().getItemPrice();
             }
@@ -105,6 +104,23 @@ public class OrderServiceImpl implements OrderService {
         }
         return new PaymentResponse(total);
     }
+
+    private static Float getComboPrice(Float comboPrice, Order order) {
+        for (OrderedCombos combo : order.getOrderedCombos()) {
+            Offer offer = combo.getFoodCombos().getOffer();
+            if(offer == null){
+                comboPrice += combo.getFoodCombos().getComboPrice();
+            }else {
+                if (offer.isEnabled()) {
+                    comboPrice += combo.getFoodCombos().getOfferPrice();
+                } else {
+                    comboPrice += combo.getFoodCombos().getComboPrice();
+                }
+            }
+        }
+        return comboPrice;
+    }
+
     @Override
     public Optional<Order> getOrderById(UUID id) {
         return orderRepository.findById(id);
@@ -161,7 +177,6 @@ public class OrderServiceImpl implements OrderService {
         }
         return null;
     }
-
 
 @Override
 public boolean cancelOrder(UUID orderId) {

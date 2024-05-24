@@ -7,6 +7,8 @@ import com.catering_app.Catering_app.repository.DecorationEmployeeRepository;
 import com.catering_app.Catering_app.repository.EmployeeRepository;
 import com.catering_app.Catering_app.repository.KitchenCrewEmployeesRepository;
 import com.catering_app.Catering_app.repository.ServingEmployeesRepository;
+import jakarta.persistence.EntityExistsException;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
@@ -25,11 +27,14 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public Employee addEmployee(EmployeeDto employeeDto) {
-        Employee employee = new Employee();
-        employee.setEmp_name(employeeDto.getEmp_name());
-        employee.setExpertise(employeeDto.getExpertise());
-        employeeRepository.save(employee);
-        return employee;
+                Employee employee = new Employee();
+                employee.setEmp_name(employeeDto.getEmp_name());
+                employee.setEmail(employeeDto.getEmail());
+                employee.setPhoneNumber(employeeDto.getPhoneNumber());
+                employee.setExpertise(employeeDto.getExpertise());
+                employee.setActive(true);
+                employeeRepository.save(employee);
+                return employee;
     }
 
     @Override
@@ -47,6 +52,35 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public void deleteEmployeeById(Long id) {
         employeeRepository.deleteById(id);
+    }
+
+    @Override
+    public void inactiveEmployee(Long id) {
+        Optional<Employee> optionalEmployee = employeeRepository.findById(id);
+        if (optionalEmployee.isPresent()){
+            Employee employee = optionalEmployee.get();
+            employee.setActive(false);
+            employeeRepository.save(employee);
+        }else{
+            throw new EntityNotFoundException();
+        }
+    }
+    @Override
+    public void activeEmployee(Long id) {
+        Optional<Employee> optionalEmployee = employeeRepository.findById(id);
+        if (optionalEmployee.isPresent()){
+            Employee employee = optionalEmployee.get();
+            employee.setActive(true);
+            employeeRepository.save(employee);
+        }else{
+            throw new EntityNotFoundException();
+        }
+    }
+
+    @Override
+    public boolean exitByEmail(String email) {
+        Optional<Employee> optionalEmployee = employeeRepository.findByEmail(email);
+        return optionalEmployee.isPresent();
     }
 
     @NotNull

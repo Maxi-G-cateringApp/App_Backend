@@ -12,6 +12,7 @@ public interface FoodComboService {
 
     boolean addFoodCombo(FoodComboDto foodComboDto,MultipartFile file) throws IOException;
     List<FoodItemCombos> getAllCombos();
+    List<FoodItemCombos> getAllCombosWithoutOffer();
     List<FoodItemCombos> getCombosByCategoryId(Integer id);
     Optional<FoodItemCombos> findById(Integer id);
     boolean editFoodCombo(Integer id, FoodComboDto foodComboDto);

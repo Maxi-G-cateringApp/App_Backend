@@ -111,6 +111,11 @@ public class FoodComboServiceImpl implements FoodComboService {
     }
 
     @Override
+    public List<FoodItemCombos> getAllCombosWithoutOffer() {
+        return foodItemComboRepository.findAll().stream().filter(combo->combo.getOffer() == null).toList();
+    }
+
+    @Override
     public List<FoodItemCombos> getCombosByCategoryId(Integer id) {
         Optional<Categories> optionalCategories = categoriesService.findById(id);
         if (optionalCategories.isPresent()) {

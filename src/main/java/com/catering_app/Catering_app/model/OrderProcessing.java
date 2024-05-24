@@ -22,10 +22,10 @@ public class OrderProcessing {
     private Integer id;
     @ManyToOne
     private Order order;
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     private ServingTeam servingTeam;
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     private DecorationTeam decorationTeam;
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     private KitchenCrew kitchenCrew;
 }

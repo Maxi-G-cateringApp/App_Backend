@@ -2,12 +2,13 @@ package com.catering_app.Catering_app.controller;
 
 import com.catering_app.Catering_app.dto.ResponseDto;
 import com.catering_app.Catering_app.dto.team.ServingEmpDto;
-import com.catering_app.Catering_app.dto.team.teamDto;
+import com.catering_app.Catering_app.dto.team.TeamDto;
 import com.catering_app.Catering_app.model.teams.ServingEmployees;
 import com.catering_app.Catering_app.model.teams.ServingTeam;
 import com.catering_app.Catering_app.service.teamServices.servingEmployees.ServingEmployeesService;
 import com.catering_app.Catering_app.service.teamServices.servingTeam.ServingTeamService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,7 +24,7 @@ public class ServingTeamController {
 
 
     @PostMapping("/add/serv_team")
-    public ResponseEntity<ServingTeam>addTeam(@RequestBody teamDto teamDto){
+    public ResponseEntity<ServingTeam>addTeam(@RequestBody TeamDto teamDto){
         return ResponseEntity.ok(servingTeamService.addServingTeam(teamDto));
     }
 
@@ -31,9 +32,18 @@ public class ServingTeamController {
     public ResponseEntity<List<ServingTeam>> getAllServingTeams(){
         return ResponseEntity.ok(servingTeamService.getAllServingTeam());
     }
+    @GetMapping("/get/team-members")
+    public ResponseEntity<?>getServingTeamMembersByTeamId(@RequestParam Integer id){
+        return ResponseEntity.ok(servingEmployeesService.getAllServingTeamByTeamId(id));
+    }
     @GetMapping("/serving_emp")
     public ResponseEntity<List<ServingEmployees>> getAllServingEmployees(){
         return ResponseEntity.ok(servingEmployeesService.getAllServingEmployees());
+    }
+    @PutMapping("/inactive/member/{empId}")
+    public ResponseEntity<?> removeTeamMember(@PathVariable Integer empId){
+        servingEmployeesService.setMemberAsInactive(empId);
+        return ResponseEntity.ok(HttpStatus.OK);
     }
 
 

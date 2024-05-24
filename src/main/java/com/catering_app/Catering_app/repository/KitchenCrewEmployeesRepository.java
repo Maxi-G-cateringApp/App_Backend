@@ -9,6 +9,6 @@ import java.util.List;
 @Repository
 public interface KitchenCrewEmployeesRepository extends JpaRepository<KitchenCrewEmployees,Integer> {
 
-
+    List<KitchenCrewEmployees>getKitchenCrewsByKitchenCrewId(Integer id);
 
 }

@@ -11,4 +11,5 @@ public interface DecorationEmployeeService {
 
     void addDecorationEmployees(DecorEmpDto decorEmpDto);
     List<DecorationEmployees> getAllDecorationEmployees();
+    List<DecorationEmployees> getDecorationEmpByDecorationTeamId(Integer id);
 }

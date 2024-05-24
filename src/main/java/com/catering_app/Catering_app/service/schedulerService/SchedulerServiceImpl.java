@@ -1,8 +1,10 @@
 package com.catering_app.Catering_app.service.schedulerService;
 
+import com.catering_app.Catering_app.model.Notifications;
 import com.catering_app.Catering_app.model.Order;
 import com.catering_app.Catering_app.model.Status;
 import com.catering_app.Catering_app.model.User;
+import com.catering_app.Catering_app.repository.NotificationRepository;
 import com.catering_app.Catering_app.repository.OrderRepository;
 import com.catering_app.Catering_app.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +25,8 @@ public class SchedulerServiceImpl implements SchedulerService {
     private UserRepository userRepository;
     @Autowired
     private OrderRepository orderRepository;
+    @Autowired
+    private NotificationRepository notificationRepository;
     private final Duration inactiveTimePeriod = Duration.ofMinutes(3);
 
     @Override
@@ -41,11 +45,13 @@ public class SchedulerServiceImpl implements SchedulerService {
         }
     }
 
-    @Scheduled(cron = "0 0/10 * * * *")
+    @Scheduled(cron = "0 0/5 * * * *")
     public void changeStatus() {
         List<Order> orders = orderRepository.findAll();
         for (Order order : orders) {
             if (order.getOrderedItems() == null || order.getUserLocation() == null) {
+                Notifications notifications = notificationRepository.getNotificationByOrderId(order.getId());
+                notificationRepository.delete(notifications);
                 orderRepository.delete(order);
             }
         }

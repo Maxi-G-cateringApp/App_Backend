@@ -88,8 +88,6 @@ public class AdminFoodItemController {
         }else{
             return ResponseEntity.ok(new ResponseDto(false,"something Wrong"));
         }
-
-
     }
 
     @DeleteMapping("/delete-combo")
@@ -107,5 +105,10 @@ public class AdminFoodItemController {
     @GetMapping("/all-combos")
     public ResponseEntity<List<FoodItemCombos>> getAllCombos(){
         return ResponseEntity.ok(foodComboService.getAllCombos());
+    }
+
+    @GetMapping("/combos/no-offer")
+    public ResponseEntity<List<FoodItemCombos>> getAllCombosWithoutOffers(){
+        return ResponseEntity.ok(foodComboService.getAllCombosWithoutOffer());
     }
 }
