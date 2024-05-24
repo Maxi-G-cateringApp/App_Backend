@@ -1,10 +1,9 @@
 package com.catering_app.Catering_app.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "notifications")
@@ -12,10 +11,16 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Notifications {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String message;
+    @ManyToOne
+    @JoinColumn(name = "order_id",nullable = false)
+    private Order order;
+    private boolean isOpen;
+    private LocalDate date;
 }

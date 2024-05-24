@@ -9,4 +9,6 @@ import java.util.List;
 @Repository
 public interface ServingTeamRepository extends JpaRepository<ServingTeam,Integer> {
 
+    ServingTeam findByTeamName(String teamName);
+
 }

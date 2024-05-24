@@ -37,8 +37,8 @@ public class DecorationEmployeeServiceImpl implements DecorationEmployeeService{
 
             decorationEmployees.setEmp(optionalEmployee.get());
             decorationEmployees.setDecorationTeam(decorationTeam);
-            int count = decorationTeam.getCount();
-            decorationTeam.setCount(count+1);
+            int count = decorationTeam.getDecorationTeamMembers().size();
+            decorationTeam.setCount(count);
             decorationEmployeeRepository.save(decorationEmployees);
 
     }
@@ -46,5 +46,10 @@ public class DecorationEmployeeServiceImpl implements DecorationEmployeeService{
     @Override
     public List<DecorationEmployees> getAllDecorationEmployees() {
         return decorationEmployeeRepository.findAll();
+    }
+
+    @Override
+    public List<DecorationEmployees> getDecorationEmpByDecorationTeamId(Integer id) {
+        return decorationEmployeeRepository.getDecorationEmployeeByDecorationTeamId(id);
     }
 }

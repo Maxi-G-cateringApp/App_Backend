@@ -21,6 +21,7 @@ public class OfferServiceImpl implements OfferService {
 
     @Override
     public void createOffer(OfferDto offerDto) {
+        System.out.println(offerDto.getComboId());
         Optional<FoodItemCombos> optionalFoodItemCombos = foodComboService.findById(offerDto.getComboId());
         if (optionalFoodItemCombos.isPresent()) {
             FoodItemCombos foodItemCombo = optionalFoodItemCombos.get();
@@ -43,6 +44,7 @@ public class OfferServiceImpl implements OfferService {
 
     @Override
     public void enableOffer(Integer id) {
+        System.out.println("offer enabledd");
         Optional<Offer> optionalOffer = offerRepository.findById(id);
 
         if (optionalOffer.isPresent()) {
@@ -64,11 +66,46 @@ public class OfferServiceImpl implements OfferService {
 
     @Override
     public void disableOffer(Integer id) {
+        System.out.println("offer disableddd");
         Offer offer = offerRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Not found"));
         offer.setEnabled(false);
         FoodItemCombos foodItemCombo = offer.getFoodItemCombo();
         foodItemCombo.setComboPrice(foodItemCombo.getComboPrice());
         foodComboService.save(foodItemCombo);
         offerRepository.save(offer);
+    }
+
+    @Override
+    public boolean updateOffer(Integer id, OfferDto offerDto) {
+        Optional<Offer>optionalOffer = offerRepository.findById(id);
+        if (optionalOffer.isPresent()){
+            Offer offer = optionalOffer.get();
+
+            Optional<Offer> existingOffer = offerRepository.findByOfferName(offerDto.getOfferName());
+            if (existingOffer.isPresent() && !existingOffer.get().getId().equals(id)){
+                return false;
+            }
+            offer.setDiscount(offerDto.getDiscount());
+            offer.setOfferName(offerDto.getOfferName());
+            offerRepository.save(offer);
+            return true;
+        }else{
+            return false;
+        }
+
+    }
+
+    @Override
+    public Offer getOfferById(Integer id) {
+        Optional<Offer>optionalOffer = offerRepository.findById(id);
+        if (optionalOffer.isPresent()){
+            return optionalOffer.get();
+        }
+        throw new EntityNotFoundException();
+    }
+
+    @Override
+    public List<Offer> getAllEnabledOffers() {
+        return offerRepository.findAll().stream().filter(Offer::isEnabled).toList();
     }
 }

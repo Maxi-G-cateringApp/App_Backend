@@ -11,4 +11,6 @@ public interface KitchenCrewEmployeeService {
 
     void addKitchenCrewEmployees(KitchenCrewEmpDto kitchenCrewEmpDto);
     List<KitchenCrewEmployees> getAllKitchenCrewEmployees();
+    List<KitchenCrewEmployees> getAllKitchenCrewsByTeamId(Integer id);
+
 }

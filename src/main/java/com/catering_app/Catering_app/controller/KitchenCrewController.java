@@ -2,7 +2,7 @@ package com.catering_app.Catering_app.controller;
 
 import com.catering_app.Catering_app.dto.ResponseDto;
 import com.catering_app.Catering_app.dto.team.KitchenCrewEmpDto;
-import com.catering_app.Catering_app.dto.team.teamDto;
+import com.catering_app.Catering_app.dto.team.TeamDto;
 import com.catering_app.Catering_app.model.teams.KitchenCrew;
 import com.catering_app.Catering_app.model.teams.KitchenCrewEmployees;
 import com.catering_app.Catering_app.service.teamServices.kitchenCrew.KitchenCrewService;
@@ -22,7 +22,7 @@ public class KitchenCrewController {
     private KitchenCrewEmployeeService kitchenCrewEmployeeService;
 
     @PostMapping("/add/kitchenCrew_team")
-    public ResponseEntity<KitchenCrew> addTeam(@RequestBody teamDto teamDto) {
+    public ResponseEntity<KitchenCrew> addTeam(@RequestBody TeamDto teamDto) {
         return ResponseEntity.ok(kitchenCrewService.addKitchenCrewTeam(teamDto));
     }
 
@@ -49,5 +49,9 @@ public class KitchenCrewController {
         return ResponseEntity.ok(new ResponseDto(true,"deleted"));
     }
 
+    @GetMapping("/get/kitchen-team-members")
+    public ResponseEntity<?>getKitchenCrewTeamMembersByTeamId(@RequestParam Integer id){
+        return ResponseEntity.ok(kitchenCrewEmployeeService.getAllKitchenCrewsByTeamId(id));
+    }
 
 }

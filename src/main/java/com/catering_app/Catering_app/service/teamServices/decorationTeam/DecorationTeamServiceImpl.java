@@ -1,6 +1,6 @@
 package com.catering_app.Catering_app.service.teamServices.decorationTeam;
 
-import com.catering_app.Catering_app.dto.team.teamDto;
+import com.catering_app.Catering_app.dto.team.TeamDto;
 import com.catering_app.Catering_app.model.teams.DecorationTeam;
 import com.catering_app.Catering_app.repository.DecorationTeamRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +17,7 @@ public class DecorationTeamServiceImpl implements DecorationTeamService {
 
 
     @Override
-    public DecorationTeam addDecorationTeam(teamDto teamDto) {
+    public DecorationTeam addDecorationTeam(TeamDto teamDto) {
         return decorationTeamRepository.save(DecorationTeam.builder()
                 .teamName(teamDto.getTeamName())
                 .build());

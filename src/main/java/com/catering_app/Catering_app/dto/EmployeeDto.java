@@ -6,6 +6,8 @@ import lombok.Data;
 public class EmployeeDto {
 
     private String emp_name;
+    private String email;
+    private String phoneNumber;
     private String expertise;
 
 

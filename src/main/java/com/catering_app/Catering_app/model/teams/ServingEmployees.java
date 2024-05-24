@@ -24,4 +24,5 @@ public class ServingEmployees {
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "serving_team_id")
     private ServingTeam servingTeam;
+    private boolean isActive;
 }

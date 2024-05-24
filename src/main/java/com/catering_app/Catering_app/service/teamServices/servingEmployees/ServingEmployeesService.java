@@ -9,4 +9,10 @@ public interface ServingEmployeesService {
 
     void addServingEmployees(ServingEmpDto servingEmpDto);
     List<ServingEmployees> getAllServingEmployees();
+    List<ServingEmployees> getAllServingTeamByTeamId(Integer id);
+
+    void removeEmpFromTeam(Integer empId,Integer teamId);
+
+    void setMemberAsInactive(Integer empId);
+
 }

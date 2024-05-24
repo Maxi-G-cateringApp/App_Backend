@@ -1,6 +1,6 @@
 package com.catering_app.Catering_app.service.teamServices.servingTeam;
 
-import com.catering_app.Catering_app.dto.team.teamDto;
+import com.catering_app.Catering_app.dto.team.TeamDto;
 import com.catering_app.Catering_app.model.teams.ServingTeam;
 import com.catering_app.Catering_app.repository.ServingTeamRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +17,7 @@ public class ServingTeamServiceImpl implements ServingTeamService {
     private ServingTeamRepository servingTeamRepository;
 
     @Override
-    public ServingTeam addServingTeam(@RequestBody teamDto teamDto) {
+    public ServingTeam addServingTeam(@RequestBody TeamDto teamDto) {
         return servingTeamRepository.save(ServingTeam.builder().
                 teamName(teamDto.getTeamName()).build());
     }
@@ -36,4 +36,10 @@ public class ServingTeamServiceImpl implements ServingTeamService {
     public void deleteServingTeamById(Integer id) {
         servingTeamRepository.deleteById(id);
     }
+
+    @Override
+    public ServingTeam getTeamByName(String teamName) {
+        return servingTeamRepository.findByTeamName(teamName);
+    }
+
 }

@@ -15,4 +15,9 @@ public interface EmployeeService {
     Optional<Employee>getEmployeeById(Long id);
     List<Employee>getEmployeesWithoutTeam();
     void deleteEmployeeById(Long id);
+
+    void inactiveEmployee(Long id);
+    public void activeEmployee(Long id);
+
+    boolean exitByEmail(String email);
 }
