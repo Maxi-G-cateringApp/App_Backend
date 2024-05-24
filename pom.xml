@@ -158,5 +158,6 @@
                 </configuration>
             </plugin>
         </plugins>
+        <finalName>maxig-cateringservice</finalName>
     </build>
 </project>
