@@ -40,8 +40,8 @@ public class ServingEmployeesServiceImp implements ServingEmployeesService {
         servingEmployees.setActive(true);
         servingEmployees.setEmp(optionalEmployee.get());
 
-        int count = servingTeam.getCount();
-        servingTeam.setCount(count + 1);
+        int count = servingTeam.getServingTeamMembers().size();
+        servingTeam.setCount(count+1);
         servingEmployeesRepository.save(servingEmployees);
     }
 

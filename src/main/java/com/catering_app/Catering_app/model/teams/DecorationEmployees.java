@@ -18,9 +18,11 @@ public class DecorationEmployees {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer decorationEmpId;
+
     @ManyToOne
     @JoinColumn(name = "emp_id")
     private Employee emp;
+
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "decoration_team_id")
     private DecorationTeam decorationTeam;

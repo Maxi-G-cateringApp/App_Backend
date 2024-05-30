@@ -38,7 +38,7 @@ public class DecorationEmployeeServiceImpl implements DecorationEmployeeService{
             decorationEmployees.setEmp(optionalEmployee.get());
             decorationEmployees.setDecorationTeam(decorationTeam);
             int count = decorationTeam.getDecorationTeamMembers().size();
-            decorationTeam.setCount(count);
+            decorationTeam.setCount(count+1);
             decorationEmployeeRepository.save(decorationEmployees);
 
     }

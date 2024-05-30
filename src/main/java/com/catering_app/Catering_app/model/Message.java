@@ -22,6 +22,7 @@ public class Message {
     private String senderId;
     private String content;
     private String timeStamp;
+    private boolean seen;
 
 
 }

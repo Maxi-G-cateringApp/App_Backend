@@ -34,7 +34,7 @@ public class KitchenCrewEmployeeServiceImpl implements KitchenCrewEmployeeServic
         KitchenCrewEmployees kitchenCrewEmployees = new KitchenCrewEmployees();
         kitchenCrewEmployees.setEmp(optionalEmployee.get());
         kitchenCrewEmployees.setKitchenCrew(kitchenCrew);
-        int count = kitchenCrew.getCount();
+        int count = kitchenCrew.getKitchenCrewTeamMembers().size();
         kitchenCrew.setCount(count+1);
         kitchenCrewEmployeesRepository.save(kitchenCrewEmployees);
 

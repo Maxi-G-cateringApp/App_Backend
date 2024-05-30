@@ -31,6 +31,8 @@ public class AdminServiceImpl implements AdminService{
         if (optionalUser.isPresent()){
             User user = optionalUser.get();
             user.setPartner(true);
+            user.setRole(Role.PARTNER);
+            System.out.println("Setting role: " + user.getRole());
             userRepository.save(user);
         }
     }

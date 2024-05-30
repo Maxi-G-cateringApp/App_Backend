@@ -1,5 +1,6 @@
 package com.catering_app.Catering_app.repository;
 
+import com.catering_app.Catering_app.model.Employee;
 import com.catering_app.Catering_app.model.teams.DecorationEmployees;
 import com.catering_app.Catering_app.model.teams.KitchenCrewEmployees;
 import com.catering_app.Catering_app.model.teams.ServingEmployees;
@@ -12,5 +13,6 @@ import java.util.List;
 public interface DecorationEmployeeRepository extends JpaRepository<DecorationEmployees,Integer> {
 
     List<DecorationEmployees> getDecorationEmployeeByDecorationTeamId(Integer id);
+    DecorationEmployees findByEmp (Employee emp);
 
 }

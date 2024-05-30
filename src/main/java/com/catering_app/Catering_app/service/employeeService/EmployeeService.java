@@ -20,4 +20,6 @@ public interface EmployeeService {
     public void activeEmployee(Long id);
 
     boolean exitByEmail(String email);
+    Employee getEmployeeByEmail(String email);
+    Object getEmployeeTeam(Employee emp);
 }

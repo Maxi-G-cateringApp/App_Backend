@@ -5,6 +5,7 @@ import com.catering_app.Catering_app.model.ChatRoom;
 import com.catering_app.Catering_app.model.Message;
 import com.catering_app.Catering_app.repository.ChatRoomRepository;
 import com.catering_app.Catering_app.repository.MessageRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.time.Instant;
@@ -29,14 +30,13 @@ public class ChatMessageService {
                     .chatRoom(chatRoom)
                     .senderId(message.getSenderId())
                     .content(message.getContent())
+                    .seen(false)
                     .timeStamp(generateTimeStamp())
                     .build());
         } else {
             return null;
         }
     }
-
-
 
 
     public List<Message> findChatRoom(String chatRoomName) {
@@ -66,5 +66,13 @@ public class ChatMessageService {
             time += "0" + Integer.toString(minutes);
         }
         return date + "-" + time;
+    }
+
+    public void markAsSeen(Long messageId) {
+        Message message = messageRepository.findById(messageId).orElseThrow(
+                    ()-> new EntityNotFoundException("Not found"));
+            message.setSeen(true);
+            messageRepository.save(message);
+
     }
 }

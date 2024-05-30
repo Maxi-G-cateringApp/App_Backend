@@ -8,8 +8,12 @@ public class MessageReq {
 
     private String chatRoomName;
     private String content;
+    private MultipartFile file;
     private String senderId;
     private String t_stamp;
     private String type;
-//    private MultipartFile file;
+    private String fileName;
+    private String fileType;
+    private String base64Data;
+    private boolean seen;
 }
