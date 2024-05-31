@@ -9,10 +9,10 @@ import java.util.UUID;
 public interface ImageService {
 
     boolean updateProfilePicture(MultipartFile file, UUID userId) throws IOException;
-    boolean updateComboPicture(MultipartFile file,Integer comboId) throws IOException;
+//    boolean updateComboPicture(MultipartFile file,Integer comboId) throws IOException;
 
-    byte[] getImage(UUID userId) throws IOException;
+//    byte[] getImage(UUID userId) throws IOException;
 
-    byte[] getComboImage(Integer comboId)throws IOException;
+//    byte[] getComboImage(Integer comboId)throws IOException;
 
 }

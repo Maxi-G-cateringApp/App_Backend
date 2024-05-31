@@ -30,7 +30,6 @@ public class AdminServiceImpl implements AdminService{
         Optional<User> optionalUser = authenticationService.getUserById(userId);
         if (optionalUser.isPresent()){
             User user = optionalUser.get();
-            user.setPartner(true);
             user.setRole(Role.PARTNER);
             System.out.println("Setting role: " + user.getRole());
             userRepository.save(user);
@@ -39,14 +38,13 @@ public class AdminServiceImpl implements AdminService{
 
     @Override
     public List<User> getAllPartnerUsers() {
-        return userRepository.findAll().stream().filter(user->user.getRole().equals(Role.USER)
-                && user.isPartner()).toList();
+        return userRepository.findAll().stream().filter(
+                user->user.getRole().equals(Role.PARTNER)).toList();
     }
 
     @Override
     public void createPartner(PartnerDto partnerDto) {
         userRepository.save(User.builder()
-                        .isPartner(true)
                         .email(partnerDto.getEmail())
                         .password(passwordEncoder.encode(partnerDto.getPassword()))
                         .active(true)

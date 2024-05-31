@@ -18,7 +18,7 @@ import lombok.Setter;
 public class OrderProcessing {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     @ManyToOne
     private Order order;

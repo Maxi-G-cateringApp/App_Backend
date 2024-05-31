@@ -11,8 +11,7 @@ import java.util.UUID;
 
 public interface FeedService {
 
-    public Feed addFeed(String content, UUID userId, MultipartFile file);
-
+    Feed addFeed(String content, UUID userId, MultipartFile file);
     List<Feed> getAllFeeds();
     List<Feed>getFeedByUser(UUID userId);
     void deleteFeedById(Long id);

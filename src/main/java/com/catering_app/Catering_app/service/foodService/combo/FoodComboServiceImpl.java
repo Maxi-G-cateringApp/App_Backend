@@ -2,72 +2,50 @@ package com.catering_app.Catering_app.service.foodService.combo;
 
 import com.catering_app.Catering_app.dto.FoodComboDto;
 import com.catering_app.Catering_app.model.Categories;
-import com.catering_app.Catering_app.model.FoodComboImage;
 import com.catering_app.Catering_app.model.FoodItemCombos;
-import com.catering_app.Catering_app.repository.FoodComboImageRepository;
 import com.catering_app.Catering_app.repository.FoodItemComboRepository;
 import com.catering_app.Catering_app.service.categoryService.CategoriesService;
-import com.sun.jdi.request.DuplicateRequestException;
-import jakarta.persistence.EntityExistsException;
+import com.catering_app.Catering_app.service.cloudinaryService.CloudinaryService;
 import jakarta.persistence.EntityNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class FoodComboServiceImpl implements FoodComboService {
 
 
-    @Autowired
-    private FoodItemComboRepository foodItemComboRepository;
-    @Autowired
-    private CategoriesService categoriesService;
-    @Autowired
-    private FoodComboImageRepository foodComboImageRepository;
-    static final String F_UPLOAD_DIR = "/Users/sreekanth/Desktop/Catering_app/src/main/resources/static/comboImages";
+    private final FoodItemComboRepository foodItemComboRepository;
+    private final CategoriesService categoriesService;
+    private final CloudinaryService cloudinaryService;
 
     @Override
     public boolean addFoodCombo(FoodComboDto foodComboDto, MultipartFile file) throws IOException {
         if (foodComboDto != null) {
-            return createFoodCombo(foodComboDto, file);
+            return createFoodComboItem(foodComboDto, file);
         } else {
             return false;
         }
     }
 
-    private boolean createFoodCombo(FoodComboDto foodComboDto, MultipartFile file) throws IOException {
-        String filePath = F_UPLOAD_DIR + file.getOriginalFilename();
+    private boolean createFoodComboItem(FoodComboDto foodComboDto, MultipartFile file) {
         Optional<FoodItemCombos> optionalFoodItemCombos = foodItemComboRepository.findByComboName(foodComboDto.getComboName());
         Optional<Categories> optionalCategories = categoriesService.getCategoryById(foodComboDto.getCategoryId());
-
         if (optionalFoodItemCombos.isPresent()) {
             return false;
         } else {
-
             if (optionalCategories.isPresent()) {
                 try {
                     Categories category = optionalCategories.get();
-                    FoodItemCombos foodItemCombo = getFoodItemCombos(foodComboDto);
-                    foodItemCombo.setCategories(category);
-
-                    FoodComboImage foodComboImage = new FoodComboImage();
-                    foodComboImage.setName(file.getOriginalFilename());
-                    foodComboImage.setType(file.getContentType());
-                    foodComboImage.setFilePath(filePath);
-                    foodComboImage.setFoodItemCombo(foodItemCombo);
-                    foodComboImageRepository.save(foodComboImage);
-                    file.transferTo(new File(filePath));
-
-                    foodItemCombo.setFoodComboImage(foodComboImage);
-                    foodItemComboRepository.save(foodItemCombo);
+                    createNewFoodCombo(foodComboDto, file, category);
                     return true;
                 } catch (Exception e) {
-                    e.printStackTrace();
                     return false;
                 }
             } else {
@@ -75,6 +53,21 @@ public class FoodComboServiceImpl implements FoodComboService {
             }
         }
     }
+
+    private void createNewFoodCombo(FoodComboDto foodComboDto, MultipartFile file, Categories category) {
+        FoodItemCombos foodItemCombo = new FoodItemCombos();
+        foodItemCombo.setComboName(foodComboDto.getComboName());
+        foodItemCombo.setDescription(foodComboDto.getDescription());
+        foodItemCombo.setComboPrice(foodComboDto.getComboPrice());
+        foodItemCombo.setCategories(category);
+        Map<?, ?> uploadFile = cloudinaryService.uploadImage(file, "FoodCombo_images");
+        String imageUrl = (String) uploadFile.get("url");
+        String publicId = (String) uploadFile.get("public_id");
+        foodItemCombo.setImageUrl(imageUrl);
+        foodItemCombo.setImageId(publicId);
+        foodItemComboRepository.save(foodItemCombo);
+    }
+
 
     private static FoodItemCombos getFoodItemCombos(FoodComboDto foodComboDto) {
 
@@ -91,15 +84,15 @@ public class FoodComboServiceImpl implements FoodComboService {
         if (optionalFoodItemCombo.isPresent()) {
             FoodItemCombos foodItemCombo = optionalFoodItemCombo.get();
 
-            Optional<FoodItemCombos>existingCombo = foodItemComboRepository.findByComboName(foodComboDto.getComboName());
-            if(existingCombo.isPresent() && !existingCombo.get().getId().equals(id)){
+            Optional<FoodItemCombos> existingCombo = foodItemComboRepository.findByComboName(foodComboDto.getComboName());
+            if (existingCombo.isPresent() && !existingCombo.get().getId().equals(id)) {
                 return false;
             }
-                foodItemCombo.setComboName(foodComboDto.getComboName());
-                foodItemCombo.setDescription(foodComboDto.getDescription());
-                foodItemCombo.setComboPrice(foodComboDto.getComboPrice());
-                foodItemComboRepository.save(foodItemCombo);
-                return true;
+            foodItemCombo.setComboName(foodComboDto.getComboName());
+            foodItemCombo.setDescription(foodComboDto.getDescription());
+            foodItemCombo.setComboPrice(foodComboDto.getComboPrice());
+            foodItemComboRepository.save(foodItemCombo);
+            return true;
         } else {
             return false;
         }
@@ -112,7 +105,7 @@ public class FoodComboServiceImpl implements FoodComboService {
 
     @Override
     public List<FoodItemCombos> getAllCombosWithoutOffer() {
-        return foodItemComboRepository.findAll().stream().filter(combo->combo.getOffer() == null).toList();
+        return foodItemComboRepository.findAll().stream().filter(combo -> combo.getOffer() == null).toList();
     }
 
     @Override
@@ -136,20 +129,27 @@ public class FoodComboServiceImpl implements FoodComboService {
     }
 
     @Override
-    public void deleteComboById(Integer id) {
-        Optional<FoodItemCombos> optionalFoodItemCombos = foodItemComboRepository.findById(id);
-        if (optionalFoodItemCombos.isPresent()) {
-            FoodItemCombos foodItemCombo = optionalFoodItemCombos.get();
-            FoodComboImage foodComboImage = foodItemCombo.getFoodComboImage();
-            foodComboImageRepository.delete(foodComboImage);
-            foodItemComboRepository.delete(foodItemCombo);
-        } else {
-            throw new RuntimeException("no item found");
-        }
-    }
-
-    @Override
     public void save(FoodItemCombos foodItemCombos) {
         foodItemComboRepository.save(foodItemCombos);
     }
+
+    public boolean updateComboPicture(MultipartFile file, Integer comboId) {
+        FoodItemCombos foodItemCombo = findById(comboId).orElseThrow(() -> new EntityNotFoundException("Not found"));
+
+        String imageId = foodItemCombo.getImageId();
+        try {
+            cloudinaryService.delete(imageId);
+            Map<?, ?> uploadFile = cloudinaryService.uploadImage(file, "FoodCombo_images");
+            String imageUrl = (String) uploadFile.get("url");
+            String publicId = (String) uploadFile.get("public_id");
+            foodItemCombo.setImageUrl(imageUrl);
+            foodItemCombo.setImageId(publicId);
+            foodItemComboRepository.save(foodItemCombo);
+            return true;
+        } catch (IOException e) {
+            return false;
+        }
+    }
+
+
 }

@@ -75,7 +75,6 @@ public class AuthenticationServiceImpl implements AuthenticationService{
         user.setRole(Role.USER);
         user.setActive(false);
         user.setGoogleSignIn(false);
-        user.setPartner(false);
         user.setRegisterDateTime(LocalDateTime.now());
         return user;
     }
@@ -159,7 +158,6 @@ public class AuthenticationServiceImpl implements AuthenticationService{
                         .name((String) payload.get("given_name"))
                         .googleSignIn(true)
                         .role(Role.USER)
-                        .isPartner(false)
                         .build());
                 String refreshToken = payload.getSubject();
                 String gToken = jwtService.generateToken(user);
@@ -179,7 +177,7 @@ public class AuthenticationServiceImpl implements AuthenticationService{
     @Override
     public List<User> getAllUsers() {
         return userRepository.findAll().stream().
-                filter(user->user.getRole().equals(Role.USER) && !user.isPartner()).toList();
+                filter(user-> user.getRole().equals(Role.USER)).toList();
     }
 
     public User updateUser(UUID userId,UpdateDto updateUser){

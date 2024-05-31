@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 public class Events {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "event_id")
     private Integer id;
     private String eventName;

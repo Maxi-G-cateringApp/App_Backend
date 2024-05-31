@@ -2,6 +2,7 @@ package com.catering_app.Catering_app.controller;
 
 import com.catering_app.Catering_app.dto.FoodComboDto;
 import com.catering_app.Catering_app.dto.FoodItemDto;
+import com.catering_app.Catering_app.dto.ProfileResponseDto;
 import com.catering_app.Catering_app.dto.ResponseDto;
 import com.catering_app.Catering_app.model.FoodItemCombos;
 import com.catering_app.Catering_app.model.Items;
@@ -25,28 +26,27 @@ public class AdminFoodItemController {
 
     private final FoodComboService foodComboService;
     private final FoodItemService foodItemService;
-    private final JwtService jwtService;
 
-    public AdminFoodItemController(FoodComboService foodComboService, FoodItemService foodItemService, JwtService jwtService) {
+    public AdminFoodItemController(FoodComboService foodComboService, FoodItemService foodItemService) {
         this.foodComboService = foodComboService;
         this.foodItemService = foodItemService;
-        this.jwtService = jwtService;
+
     }
 
 
     @PostMapping("/add-combo")
-    public ResponseEntity<ResponseDto> addComboItems(@RequestParam ("combo") String comboJson,
+    public ResponseEntity<ResponseDto> addComboItems(@RequestParam("combo") String comboJson,
                                                      @RequestPart("file") MultipartFile file) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         FoodComboDto foodComboDto = mapper.readValue(comboJson, FoodComboDto.class);
-            boolean addItem = foodComboService.addFoodCombo(foodComboDto,file);
-            ResponseDto response;
-            if (addItem){
-                response = new ResponseDto(true,"add item success");
-            }else {
-                response = new ResponseDto(false,"add item success");
-            }
-            return ResponseEntity.ok(response);
+        boolean addItem = foodComboService.addFoodCombo(foodComboDto, file);
+        ResponseDto response;
+        if (addItem) {
+            response = new ResponseDto(true, "add item success");
+        } else {
+            response = new ResponseDto(false, "add item success");
+        }
+        return ResponseEntity.ok(response);
 
     }
 
@@ -69,46 +69,60 @@ public class AdminFoodItemController {
     }
 
     @PutMapping("/edit-combo")
-    public ResponseEntity<ResponseDto>editCombo(@RequestParam Integer id,
-                                                @RequestBody FoodComboDto foodComboDto){
-            boolean response = foodComboService.editFoodCombo(id,foodComboDto);
-            if(response){
-                return ResponseEntity.ok(new ResponseDto(true,"edit success"));
-            }else{
-                return ResponseEntity.ok(new ResponseDto(false,"something Wrong"));
-            }
-    }
-
-    @PutMapping("/edit-item")
-    public ResponseEntity<ResponseDto>editItem(@RequestParam Integer id,
-                                                @RequestBody FoodItemDto foodItemDto){
-        boolean response = foodItemService.editFoodItem(id,foodItemDto);
-        if (response){
-            return ResponseEntity.ok(new ResponseDto(true,"edit success"));
-        }else{
-            return ResponseEntity.ok(new ResponseDto(false,"something Wrong"));
+    public ResponseEntity<ResponseDto> editCombo(@RequestParam Integer id,
+                                                 @RequestBody FoodComboDto foodComboDto) {
+        boolean response = foodComboService.editFoodCombo(id, foodComboDto);
+        if (response) {
+            return ResponseEntity.ok(new ResponseDto(true, "edit success"));
+        } else {
+            return ResponseEntity.ok(new ResponseDto(false, "something Wrong"));
         }
     }
 
-    @DeleteMapping("/delete-combo")
-    public ResponseEntity<ResponseDto>deleteCombo(@RequestParam Integer id){
-        foodComboService.deleteComboById(id);
-        return  ResponseEntity.ok(new ResponseDto(true,"delete success"));
+    @PutMapping("/edit-item")
+    public ResponseEntity<ResponseDto> editItem(@RequestParam Integer id,
+                                                @RequestBody FoodItemDto foodItemDto) {
+        boolean response = foodItemService.editFoodItem(id, foodItemDto);
+        if (response) {
+            return ResponseEntity.ok(new ResponseDto(true, "edit success"));
+        } else {
+            return ResponseEntity.ok(new ResponseDto(false, "something Wrong"));
+        }
     }
 
+//    @DeleteMapping("/delete-combo")
+//    public ResponseEntity<ResponseDto>deleteCombo(@RequestParam Integer id){
+//        foodComboService.deleteComboById(id);
+//        return  ResponseEntity.ok(new ResponseDto(true,"delete success"));
+//    }
+
     @DeleteMapping("/delete-item")
-    public ResponseEntity<ResponseDto>deleteItem(@RequestParam Integer id){
+    public ResponseEntity<ResponseDto> deleteItem(@RequestParam Integer id) {
         foodItemService.deleteItemById(id);
-        return  ResponseEntity.ok(new ResponseDto(true,"delete success"));
+        return ResponseEntity.ok(new ResponseDto(true, "delete success"));
     }
 
     @GetMapping("/all-combos")
-    public ResponseEntity<List<FoodItemCombos>> getAllCombos(){
+    public ResponseEntity<List<FoodItemCombos>> getAllCombos() {
         return ResponseEntity.ok(foodComboService.getAllCombos());
     }
 
     @GetMapping("/combos/no-offer")
-    public ResponseEntity<List<FoodItemCombos>> getAllCombosWithoutOffers(){
+    public ResponseEntity<List<FoodItemCombos>> getAllCombosWithoutOffers() {
         return ResponseEntity.ok(foodComboService.getAllCombosWithoutOffer());
+    }
+
+    @PostMapping("/combo-picture/{comboId}")
+    public ResponseEntity<?> updateComboPicture(@RequestPart MultipartFile file,
+                                                @PathVariable("comboId") Integer comboId
+    ) {
+        boolean response = foodComboService.updateComboPicture(file, comboId);
+        ProfileResponseDto profileResponseDto;
+        if (response) {
+            profileResponseDto = new ProfileResponseDto("success", true);
+        } else {
+            profileResponseDto = new ProfileResponseDto("failed", false);
+        }
+        return ResponseEntity.ok(profileResponseDto);
     }
 }

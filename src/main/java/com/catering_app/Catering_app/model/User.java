@@ -33,19 +33,13 @@ public class User implements UserDetails {
     private String password;
     @Enumerated(EnumType.STRING)
     private Role role;
-    String otp;
+    private String otp;
     private LocalDateTime otpGeneratedDateTime;
     private Boolean active;
     private LocalDateTime registerDateTime;
     private boolean googleSignIn;
-    private boolean isPartner;
-
-
-    @OneToOne
-    @JoinColumn(name = "image_id")
-    @JsonManagedReference
-    private UserProfileImage userProfileImage;
-
+    private String imageUrl;
+    private String imageId;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
