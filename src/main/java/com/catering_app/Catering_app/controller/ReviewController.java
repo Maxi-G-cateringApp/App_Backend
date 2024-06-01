@@ -3,8 +3,6 @@ package com.catering_app.Catering_app.controller;
 import com.catering_app.Catering_app.dto.ResponseDto;
 import com.catering_app.Catering_app.dto.ReviewDto;
 import com.catering_app.Catering_app.service.reviewService.ReviewService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,8 +11,11 @@ import java.util.UUID;
 @RestController
 public class ReviewController {
 
-    @Autowired
-    private ReviewService reviewService;
+    private final ReviewService reviewService;
+
+    public ReviewController(ReviewService reviewService) {
+        this.reviewService = reviewService;
+    }
 
     @PostMapping("/add-review")
     public ResponseEntity<?>addReview(@RequestBody ReviewDto reviewDto){

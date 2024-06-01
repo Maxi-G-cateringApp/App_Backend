@@ -19,6 +19,8 @@ public class Items {
     private Integer id;
     private String itemName;
     private Float itemPrice;
+    private String imageUrl;
+    private String imageId;
     @ManyToOne
     @JoinColumn(name = "category_id",referencedColumnName = "category_id")
     @JsonIgnore

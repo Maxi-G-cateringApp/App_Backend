@@ -2,8 +2,6 @@ package com.catering_app.Catering_app.controller;
 import com.catering_app.Catering_app.dto.ResponseDto;
 import com.catering_app.Catering_app.model.Feed;
 import com.catering_app.Catering_app.service.feedService.FeedService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -12,10 +10,13 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequiredArgsConstructor
 public class FeedController {
 
     private final FeedService feedService;
+
+    public FeedController(FeedService feedService) {
+        this.feedService = feedService;
+    }
 
     @PostMapping(value = "/add-feed")
     public ResponseEntity<?>addFeed(@RequestParam("content") String content,

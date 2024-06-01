@@ -133,23 +133,6 @@ public class FoodComboServiceImpl implements FoodComboService {
         foodItemComboRepository.save(foodItemCombos);
     }
 
-    public boolean updateComboPicture(MultipartFile file, Integer comboId) {
-        FoodItemCombos foodItemCombo = findById(comboId).orElseThrow(() -> new EntityNotFoundException("Not found"));
-
-        String imageId = foodItemCombo.getImageId();
-        try {
-            cloudinaryService.delete(imageId);
-            Map<?, ?> uploadFile = cloudinaryService.uploadImage(file, "FoodCombo_images");
-            String imageUrl = (String) uploadFile.get("url");
-            String publicId = (String) uploadFile.get("public_id");
-            foodItemCombo.setImageUrl(imageUrl);
-            foodItemCombo.setImageId(publicId);
-            foodItemComboRepository.save(foodItemCombo);
-            return true;
-        } catch (IOException e) {
-            return false;
-        }
-    }
 
 
 }

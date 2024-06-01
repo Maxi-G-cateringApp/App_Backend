@@ -7,44 +7,52 @@ import com.catering_app.Catering_app.model.OrderedItems;
 import com.catering_app.Catering_app.repository.ItemsRepository;
 import com.catering_app.Catering_app.repository.OrderedItemRepository;
 import com.catering_app.Catering_app.service.categoryService.CategoriesService;
+import com.catering_app.Catering_app.service.cloudinaryService.CloudinaryService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class FoodItemServiceImpl implements FoodItemService {
 
-    @Autowired
-    private ItemsRepository itemsRepository;
-    @Autowired
-    private CategoriesService categoriesService;
-    @Autowired
-    private OrderedItemRepository orderedItemRepository;
+    private final ItemsRepository itemsRepository;
+    private final CategoriesService categoriesService;
+    private final OrderedItemRepository orderedItemRepository;
+    private final CloudinaryService cloudinaryService;
 
 
     @Override
-    public boolean addFoodItem(FoodItemDto fooItemDto) {
+    public boolean addFoodItem(FoodItemDto fooItemDto, MultipartFile file) {
 
         Optional<Categories> optionalCategories =categoriesService.getCategoryById(fooItemDto.getCategoryId());
         if (optionalCategories.isPresent()){
             Categories category = optionalCategories.get();
-            Items foodItem = createFoodItem(fooItemDto);
-            foodItem.setCategories(category);
-            itemsRepository.save(foodItem);
+            createNewFoodItem(fooItemDto, file, category);
             return true;
         }else {
             return false;
         }
     }
 
-    private Items createFoodItem(FoodItemDto fooItemDto) {
+    private void createNewFoodItem(FoodItemDto fooItemDto, MultipartFile file, Categories category) {
         Items foodItem = new Items();
         foodItem.setItemName(fooItemDto.getItemName());
         foodItem.setItemPrice(fooItemDto.getItemPrice());
-        return foodItem;
+        Map<?,?> uploadFile = cloudinaryService.uploadImage(file,"FoodItem_images");
+        String imageUrl = (String) uploadFile.get("url");
+        String publicId = (String) uploadFile.get("public_id");
+        foodItem.setImageUrl(imageUrl);
+        foodItem.setImageId(publicId);
+        foodItem.setCategories(category);
+        itemsRepository.save(foodItem);
     }
+
 
     public List<Items> getAllFoodItems() {
         return itemsRepository.findAll();
@@ -53,15 +61,6 @@ public class FoodItemServiceImpl implements FoodItemService {
     @Override
     public Optional<Items> findByName(String itemName) {
         return itemsRepository.findByItemName(itemName);
-    }
-
-
-    @Override
-    public void deleteItemById(Integer id) {
-        List<OrderedItems>orderedItemsList = orderedItemRepository.findByFoodItems_Id(id);
-        System.out.println(orderedItemsList+"  ordered list");
-        orderedItemRepository.deleteAll(orderedItemsList);
-        itemsRepository.deleteById(id);
     }
 
     @Override

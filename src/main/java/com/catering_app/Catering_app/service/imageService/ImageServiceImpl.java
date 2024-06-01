@@ -1,9 +1,15 @@
 package com.catering_app.Catering_app.service.imageService;
 
+import com.catering_app.Catering_app.model.FoodItemCombos;
+import com.catering_app.Catering_app.model.Items;
 import com.catering_app.Catering_app.model.User;
+import com.catering_app.Catering_app.repository.FoodItemComboRepository;
+import com.catering_app.Catering_app.repository.ItemsRepository;
 import com.catering_app.Catering_app.repository.UserRepository;
 import com.catering_app.Catering_app.service.cloudinaryService.CloudinaryService;
-import lombok.RequiredArgsConstructor;
+import com.catering_app.Catering_app.service.foodService.combo.FoodComboService;
+import com.catering_app.Catering_app.service.foodService.items.FoodItemService;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -13,11 +19,23 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
-@RequiredArgsConstructor
 public class ImageServiceImpl implements ImageService {
 
     private final UserRepository userRepository;
     private final CloudinaryService cloudinaryService;
+    private final FoodComboService foodComboService;
+    private final FoodItemComboRepository foodItemComboRepository;
+    private final ItemsRepository itemsRepository;
+    private final FoodItemService foodItemService;
+
+    public ImageServiceImpl(UserRepository userRepository, CloudinaryService cloudinaryService, FoodComboService foodComboService, FoodItemComboRepository foodItemComboRepository, ItemsRepository itemsRepository, FoodItemService foodItemService) {
+        this.userRepository = userRepository;
+        this.cloudinaryService = cloudinaryService;
+        this.foodComboService = foodComboService;
+        this.foodItemComboRepository = foodItemComboRepository;
+        this.itemsRepository = itemsRepository;
+        this.foodItemService = foodItemService;
+    }
 
     @Override
     public boolean updateProfilePicture(MultipartFile file, UUID userId) throws IOException {
@@ -43,70 +61,49 @@ public class ImageServiceImpl implements ImageService {
             String publicId = (String) uploadFile.get("public_id");
             user.setImageUrl(imageUrl);
             user.setImageId(publicId);
-        }catch (Exception e){
+        } catch (Exception e) {
             throw new RuntimeException("Can't upload photo");
         }
     }
 
-//    @Override
-//    public boolean updateComboPicture(MultipartFile file, Integer comboId) throws IOException {
-//        String filePath = F_UPLOAD_DIR + file.getOriginalFilename();
-//        FoodItemCombos foodItemCombo = foodComboService.findById(comboId).get();
-//
-//        FoodComboImage foodComboImage = foodItemCombo.getFoodComboImage();
-//        if (foodComboImage != null) {
-//            foodComboImage.setName(file.getOriginalFilename());
-//            foodComboImage.setType(file.getContentType());
-//            foodComboImage.setFilePath(filePath);
-//        } else {
-//            FoodComboImage newFoodComboImage = foodComboImageRepository.save(FoodComboImage.builder()
-//                    .name(file.getOriginalFilename())
-//                    .type(file.getContentType())
-//                    .filePath(filePath)
-//                    .foodItemCombo(foodItemCombo)
-//                    .build());
-//            foodItemCombo.setFoodComboImage(newFoodComboImage);
-//        }
-//            foodItemComboRepository.save(foodItemCombo);
-//            file.transferTo(new File(filePath));
-//            return true;
-//        }
+    @Override
+    public boolean updateComboPicture(MultipartFile file, Integer comboId) {
+        FoodItemCombos foodItemCombo = foodComboService.findById(comboId).orElseThrow(() -> new EntityNotFoundException("Not found"));
 
-//        @Override
-//        public byte[] getImage (UUID userId) throws IOException {
-//
-//            try {
-//                UserProfileImage userProfileImage = imageRepository.findUserProfileImageByUserId(userId);
-//                if (userProfileImage != null) {
-//                    User user = userProfileImage.getUser();
-//                    String filePath = user.getUserProfileImage().getFilePath();
-//                    return Files.readAllBytes(new File(filePath).toPath());
-//                } else {
-//                    return null;
-//                }
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//            return null;
-//        }
-
-//        @Override
-//        public byte[] getComboImage (Integer id) throws IOException{
-//
-//            FoodComboImage foodComboImage = foodComboImageRepository.findFoodCombosImageById(id);
-//            try {
-//                if (foodComboImage != null) {
-//                    FoodItemCombos foodItemCombo = foodComboImage.getFoodItemCombo();
-//                    String filePath = foodItemCombo.getFoodComboImage().getFilePath();
-//                    return Files.readAllBytes(new File(filePath).toPath());
-//                } else {
-//                    return null;
-//                }
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//            return null;
-//        }
+        String imageId = foodItemCombo.getImageId();
+        try {
+            cloudinaryService.delete(imageId);
+            Map<?, ?> uploadFile = cloudinaryService.uploadImage(file, "FoodCombo_images");
+            String imageUrl = (String) uploadFile.get("url");
+            String publicId = (String) uploadFile.get("public_id");
+            foodItemCombo.setImageUrl(imageUrl);
+            foodItemCombo.setImageId(publicId);
+            foodItemComboRepository.save(foodItemCombo);
+            return true;
+        } catch (IOException e) {
+            return false;
+        }
     }
+
+    @Override
+    public boolean updateItemPicture(MultipartFile file, Integer itemId) {
+        Items foodItem = foodItemService.findById(itemId).orElseThrow(() -> new EntityNotFoundException("Not found"));
+
+        String imageId = foodItem.getImageId();
+        try {
+            cloudinaryService.delete(imageId);
+            Map<?, ?> uploadFile = cloudinaryService.uploadImage(file, "FoodItem_images");
+            String imageUrl = (String) uploadFile.get("url");
+            String publicId = (String) uploadFile.get("public_id");
+            foodItem.setImageUrl(imageUrl);
+            foodItem.setImageId(publicId);
+            itemsRepository.save(foodItem);
+            return true;
+        } catch (IOException e) {
+            return false;
+        }
+    }
+
+}
 
 

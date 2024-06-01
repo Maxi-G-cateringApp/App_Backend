@@ -3,9 +3,7 @@ package com.catering_app.Catering_app.controller;
 import com.catering_app.Catering_app.dto.EmployeeDto;
 import com.catering_app.Catering_app.dto.ResponseDto;
 import com.catering_app.Catering_app.model.Employee;
-import com.catering_app.Catering_app.repository.EmployeeRepository;
 import com.catering_app.Catering_app.service.employeeService.EmployeeService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,8 +13,11 @@ import java.util.List;
 @RestController
 public class EmployeeController {
 
-    @Autowired
-    private EmployeeService employeeService;
+    private final EmployeeService employeeService;
+
+    public EmployeeController(EmployeeService employeeService) {
+        this.employeeService = employeeService;
+    }
 
     @PostMapping("/add-employee")
     public ResponseEntity<?> addEmployee(@RequestBody EmployeeDto employeeDto){

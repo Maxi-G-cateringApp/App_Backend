@@ -5,13 +5,9 @@ import com.catering_app.Catering_app.dto.MessageReq;
 import com.catering_app.Catering_app.model.Message;
 import com.catering_app.Catering_app.service.chatService.ChatMessageService;
 import com.catering_app.Catering_app.service.chatService.ChatRoomService;
-import com.catering_app.Catering_app.service.cloudinaryService.CloudinaryService;
-import com.cloudinary.Cloudinary;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -20,14 +16,16 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequiredArgsConstructor
 public class ChatController {
     private final SimpMessagingTemplate simpMessagingTemplate;
     private final ChatMessageService chatMessageService;
     private final ChatRoomService chatRoomService;
-    private final Cloudinary cloudinary;
-    private final CloudinaryService cloudinaryService;
 
+    public ChatController(SimpMessagingTemplate simpMessagingTemplate, ChatMessageService chatMessageService, ChatRoomService chatRoomService) {
+        this.simpMessagingTemplate = simpMessagingTemplate;
+        this.chatMessageService = chatMessageService;
+        this.chatRoomService = chatRoomService;
+    }
 
 
     @MessageMapping("/send-message")

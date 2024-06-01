@@ -7,7 +7,6 @@ import com.catering_app.Catering_app.model.teams.KitchenCrew;
 import com.catering_app.Catering_app.model.teams.KitchenCrewEmployees;
 import com.catering_app.Catering_app.service.teamServices.kitchenCrew.KitchenCrewService;
 import com.catering_app.Catering_app.service.teamServices.kitchenCrewEmployees.KitchenCrewEmployeeService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,10 +15,13 @@ import java.util.List;
 @RestController
 public class KitchenCrewController {
 
-    @Autowired
-    private KitchenCrewService kitchenCrewService;
-    @Autowired
-    private KitchenCrewEmployeeService kitchenCrewEmployeeService;
+    private final KitchenCrewService kitchenCrewService;
+    private final KitchenCrewEmployeeService kitchenCrewEmployeeService;
+
+    public KitchenCrewController(KitchenCrewService kitchenCrewService, KitchenCrewEmployeeService kitchenCrewEmployeeService) {
+        this.kitchenCrewService = kitchenCrewService;
+        this.kitchenCrewEmployeeService = kitchenCrewEmployeeService;
+    }
 
     @PostMapping("/add/kitchenCrew_team")
     public ResponseEntity<KitchenCrew> addTeam(@RequestBody TeamDto teamDto) {

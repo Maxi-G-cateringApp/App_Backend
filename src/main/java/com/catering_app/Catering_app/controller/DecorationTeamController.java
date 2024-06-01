@@ -7,7 +7,6 @@ import com.catering_app.Catering_app.model.teams.DecorationEmployees;
 import com.catering_app.Catering_app.model.teams.DecorationTeam;
 import com.catering_app.Catering_app.service.teamServices.decorationEmployees.DecorationEmployeeService;
 import com.catering_app.Catering_app.service.teamServices.decorationTeam.DecorationTeamService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,10 +16,13 @@ import java.util.List;
 public class DecorationTeamController {
 
 
-    @Autowired
-    private DecorationTeamService decorationTeamService;
-    @Autowired
-    private DecorationEmployeeService decorationEmployeeService;
+    private final DecorationTeamService decorationTeamService;
+    private final DecorationEmployeeService decorationEmployeeService;
+
+    public DecorationTeamController(DecorationTeamService decorationTeamService, DecorationEmployeeService decorationEmployeeService) {
+        this.decorationTeamService = decorationTeamService;
+        this.decorationEmployeeService = decorationEmployeeService;
+    }
 
 
     @PostMapping("/add/decor_team")

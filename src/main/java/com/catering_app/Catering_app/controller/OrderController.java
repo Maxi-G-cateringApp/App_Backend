@@ -3,7 +3,6 @@ package com.catering_app.Catering_app.controller;
 import com.catering_app.Catering_app.dto.*;
 import com.catering_app.Catering_app.model.Order;
 import com.catering_app.Catering_app.service.orderService.OrderService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,8 +13,11 @@ import java.util.UUID;
 @RestController
 public class OrderController {
 
-    @Autowired
-    private OrderService orderService;
+    private final OrderService orderService;
+
+    public OrderController(OrderService orderService) {
+        this.orderService = orderService;
+    }
 
 
     @PostMapping("/save-order")

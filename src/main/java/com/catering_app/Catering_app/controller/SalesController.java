@@ -7,22 +7,23 @@ import com.catering_app.Catering_app.model.Order;
 import com.catering_app.Catering_app.model.TimePeriod;
 import com.catering_app.Catering_app.service.pdfService.PdfService;
 import com.catering_app.Catering_app.service.salesReport.SalesReportService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.util.List;
-import java.util.UUID;
 
 @RestController
-@RequiredArgsConstructor
 public class SalesController {
 
     private final SalesReportService salesReportService;
     private final PdfService pdfService;
+
+    public SalesController(SalesReportService salesReportService, PdfService pdfService) {
+        this.salesReportService = salesReportService;
+        this.pdfService = pdfService;
+    }
 
     @GetMapping("/show/total-sale/graph")
     public ResponseEntity<SalesDto> getSaleForOneMonth(){
@@ -74,13 +75,10 @@ public class SalesController {
         List<Order> orders = salesReportService.getOrderByTimePeriod(timePeriod);
         Double totalSales = salesReportService.calculateTotalSales(orders);
         Integer orderCount = orders.size();
-
         byte[] pdfBytes = pdfService.generateSalesReportPdf(orders, totalSales, orderCount);
-
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_PDF);
         headers.setContentDispositionFormData("attachment", "sales-report.pdf");
-
         return ResponseEntity.ok()
                 .headers(headers)
                 .body(pdfBytes);

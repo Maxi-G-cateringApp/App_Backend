@@ -5,8 +5,6 @@ import com.catering_app.Catering_app.dto.ResponseDto;
 import com.catering_app.Catering_app.model.Events;
 import com.catering_app.Catering_app.service.eventService.EventService;
 import jakarta.persistence.EntityExistsException;
-import jdk.jfr.Event;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,8 +15,12 @@ import java.util.Optional;
 @RestController
 public class EventController {
 
-    @Autowired
-    private EventService eventService;
+
+    private final EventService eventService;
+
+    public EventController(EventService eventService) {
+        this.eventService = eventService;
+    }
 
     @PostMapping("/add-event")
     public ResponseEntity<?> addEvent(@RequestBody EventDto eventDto){

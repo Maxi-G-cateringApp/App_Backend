@@ -44,19 +44,14 @@ public class OfferServiceImpl implements OfferService {
 
     @Override
     public void enableOffer(Integer id) {
-        System.out.println("offer enabledd");
         Optional<Offer> optionalOffer = offerRepository.findById(id);
 
         if (optionalOffer.isPresent()) {
             Offer offer = optionalOffer.get();
-
-
             FoodItemCombos foodItemCombo = offer.getFoodItemCombo();
-            System.out.println(foodItemCombo.getOffer()+ "offer");
             float discount = (float) (foodItemCombo.getOffer().getDiscount() / 100.0) * foodItemCombo.getComboPrice();
             foodItemCombo.setOfferPrice(foodItemCombo.getComboPrice() - discount);
             offer.setEnabled(true);
-
             offerRepository.save(offer);
             foodComboService.save(foodItemCombo);
         } else {
@@ -66,7 +61,6 @@ public class OfferServiceImpl implements OfferService {
 
     @Override
     public void disableOffer(Integer id) {
-        System.out.println("offer disableddd");
         Offer offer = offerRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Not found"));
         offer.setEnabled(false);
         FoodItemCombos foodItemCombo = offer.getFoodItemCombo();

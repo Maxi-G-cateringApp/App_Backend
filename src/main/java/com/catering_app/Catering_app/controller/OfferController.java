@@ -4,7 +4,6 @@ import com.catering_app.Catering_app.dto.OfferDto;
 import com.catering_app.Catering_app.dto.ResponseDto;
 import com.catering_app.Catering_app.model.Offer;
 import com.catering_app.Catering_app.service.offerService.OfferService;
-import lombok.RequiredArgsConstructor;
 import org.apache.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,10 +11,13 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequiredArgsConstructor
 public class OfferController {
 
     private final OfferService offerService;
+
+    public OfferController(OfferService offerService) {
+        this.offerService = offerService;
+    }
 
     @PostMapping("/create-offer")
     public ResponseEntity<?>createOffer(@RequestBody OfferDto offerDto){
