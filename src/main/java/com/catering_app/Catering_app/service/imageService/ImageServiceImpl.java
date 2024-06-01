@@ -69,16 +69,11 @@ public class ImageServiceImpl implements ImageService {
     @Override
     public boolean updateComboPicture(MultipartFile file, Integer comboId) {
         FoodItemCombos foodItemCombo = foodComboService.findById(comboId).orElseThrow(() -> new EntityNotFoundException("Not found"));
-
-        String imageId = foodItemCombo.getImageId();
         try {
-            cloudinaryService.delete(imageId);
-            Map<?, ?> uploadFile = cloudinaryService.uploadImage(file, "FoodCombo_images");
-            String imageUrl = (String) uploadFile.get("url");
-            String publicId = (String) uploadFile.get("public_id");
-            foodItemCombo.setImageUrl(imageUrl);
-            foodItemCombo.setImageId(publicId);
-            foodItemComboRepository.save(foodItemCombo);
+            if(foodItemCombo.getImageId() != null){
+                cloudinaryService.delete(foodItemCombo.getImageId());
+            }
+            uploadComboPicture(file, foodItemCombo);
             return true;
         } catch (IOException e) {
             return false;
@@ -88,20 +83,32 @@ public class ImageServiceImpl implements ImageService {
     @Override
     public boolean updateItemPicture(MultipartFile file, Integer itemId) {
         Items foodItem = foodItemService.findById(itemId).orElseThrow(() -> new EntityNotFoundException("Not found"));
-
-        String imageId = foodItem.getImageId();
         try {
-            cloudinaryService.delete(imageId);
-            Map<?, ?> uploadFile = cloudinaryService.uploadImage(file, "FoodItem_images");
-            String imageUrl = (String) uploadFile.get("url");
-            String publicId = (String) uploadFile.get("public_id");
-            foodItem.setImageUrl(imageUrl);
-            foodItem.setImageId(publicId);
-            itemsRepository.save(foodItem);
+            if(foodItem.getImageId() != null){
+                cloudinaryService.delete(foodItem.getImageId());
+            }
+            uploadItemPicture(file, foodItem);
             return true;
         } catch (IOException e) {
             return false;
         }
+    }
+
+    private void uploadItemPicture(MultipartFile file, Items foodItem) {
+        Map<?, ?> uploadFile = cloudinaryService.uploadImage(file, "FoodItem_images");
+        String imageUrl = (String) uploadFile.get("url");
+        String publicId = (String) uploadFile.get("public_id");
+        foodItem.setImageUrl(imageUrl);
+        foodItem.setImageId(publicId);
+        itemsRepository.save(foodItem);
+    }
+    private void uploadComboPicture(MultipartFile file, FoodItemCombos foodItemCombo) {
+        Map<?, ?> uploadFile = cloudinaryService.uploadImage(file, "FoodCombo_images");
+        String imageUrl = (String) uploadFile.get("url");
+        String publicId = (String) uploadFile.get("public_id");
+        foodItemCombo.setImageUrl(imageUrl);
+        foodItemCombo.setImageId(publicId);
+        foodItemComboRepository.save(foodItemCombo);
     }
 
 }
