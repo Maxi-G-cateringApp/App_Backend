@@ -56,6 +56,7 @@ public class OrderServiceImpl implements OrderService {
             optionalEvents.ifPresent(order::setEvents);
             order.setOrderedCombos(OrderedCombosList);
             order.setOrderedItems(orderedItemsList);
+            order.setPayFullAmount(false);
             orderRepository.save(order);
         } else {
             throw new EntityNotFoundException();
@@ -205,6 +206,7 @@ public boolean cancelOrder(UUID orderId) {
         Optional<Order> optionalOrder = orderRepository.findById(orderId);
         if (optionalOrder.isPresent()){
             Order order = optionalOrder.get();
+            order.setPayFullAmount(true);
             order.setStatus(Status.COMPLETED);
             orderRepository.save(order);
             return true;
@@ -222,5 +224,12 @@ public boolean cancelOrder(UUID orderId) {
         userLocation.setLatitude(locationDto.getLatitude());
         userLocation.setLongitude(locationDto.getLongitude());
         return userLocation;
+    }
+
+    @Override
+    public void confirmPayment(UUID orderId) {
+        Order order = getOrderById(orderId).orElseThrow(()->new EntityNotFoundException("order not found"));
+        order.setPayFullAmount(true);
+        orderRepository.save(order);
     }
 }

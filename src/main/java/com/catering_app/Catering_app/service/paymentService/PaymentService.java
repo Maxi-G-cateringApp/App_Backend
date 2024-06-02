@@ -9,6 +9,6 @@ import java.util.UUID;
 public interface PaymentService {
 
 
-//    public PaymentConfirmationResponse createPayment(UUID orderId);
-    public TransactionDetails createTransaction(UUID orderId);
+    TransactionDetails createTransaction(UUID orderId);
+    TransactionDetails createBalanceTransaction(UUID orderId);
 }

@@ -5,6 +5,7 @@ import com.catering_app.Catering_app.service.orderService.OrderService;
 import com.razorpay.Order;
 import com.razorpay.RazorpayClient;
 import com.razorpay.RazorpayException;
+import jakarta.persistence.EntityNotFoundException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -37,7 +38,25 @@ public class PaymentServiceImpl implements PaymentService{
         }
         return null;
     }
+    public TransactionDetails createBalanceTransaction(UUID orderId){
+        com.catering_app.Catering_app.model.Order userOrder = orderService.getOrderById(orderId)
+                .orElseThrow(()->new EntityNotFoundException("order not found"));
+        Float total = userOrder.getTotalAmount();
+        Float advancedAmount = userOrder.getAdvanceAmount();
+        float balanceAmount = total- advancedAmount;
 
+        try {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("amount",balanceAmount*100);
+            jsonObject.put("currency",CURRENCY);
+            RazorpayClient client = new RazorpayClient(KEY,KEY_SECRET);
+            Order order = client.orders.create(jsonObject);
+            return prepareTransactionDetails(order);
+        } catch (RazorpayException e) {
+            System.out.println(e.getMessage());
+        }
+        return null;
+    }
 
     private TransactionDetails prepareTransactionDetails(Order order){
         String orderId = order.get("id");

@@ -3,12 +3,11 @@ package com.catering_app.Catering_app.controller;
 import com.catering_app.Catering_app.dto.*;
 import com.catering_app.Catering_app.model.Order;
 import com.catering_app.Catering_app.service.orderService.OrderService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @RestController
 public class OrderController {
@@ -87,6 +86,14 @@ public class OrderController {
         }else {
             return ResponseEntity.ok(new ResponseDto(false,"error"));
         }
-
     }
+
+    @PostMapping("/payment/confirm/{orderId}")
+    public ResponseEntity<?>balancePaymentConfirm(@PathVariable("orderId") UUID orderId)  {
+        orderService.confirmPayment(orderId);
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "payment completed");
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
 }

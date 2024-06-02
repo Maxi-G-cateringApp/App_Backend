@@ -45,6 +45,7 @@ public class Order {
 
     private Float totalAmount;
     private Float advanceAmount;
+    private boolean isPayFullAmount;
     @Enumerated(EnumType.STRING)
     private Venue venue;
 

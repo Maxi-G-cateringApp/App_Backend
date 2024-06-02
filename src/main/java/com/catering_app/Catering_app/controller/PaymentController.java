@@ -22,6 +22,10 @@ public class PaymentController {
     public ResponseEntity<TransactionDetails>payment(@PathVariable("orderId") UUID orderId) throws RazorpayException {
         return ResponseEntity.ok(paymentService.createTransaction(orderId));
 
+    }
 
+    @PostMapping("/payment/balance/{orderId}")
+    public ResponseEntity<TransactionDetails>balancePayment(@PathVariable("orderId") UUID orderId) throws RazorpayException {
+        return ResponseEntity.ok(paymentService.createBalanceTransaction(orderId));
     }
 }
