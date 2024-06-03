@@ -1,17 +1,22 @@
 package com.catering_app.Catering_app.service.chatService;
 
+import com.catering_app.Catering_app.dto.ChatImageResponse;
 import com.catering_app.Catering_app.dto.MessageReq;
 import com.catering_app.Catering_app.model.ChatRoom;
 import com.catering_app.Catering_app.model.Message;
 import com.catering_app.Catering_app.repository.ChatRoomRepository;
 import com.catering_app.Catering_app.repository.MessageRepository;
+import com.catering_app.Catering_app.service.cloudinaryService.CloudinaryService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -21,6 +26,7 @@ public class ChatMessageService {
     private final MessageRepository messageRepository;
     private final ChatRoomService chatRoomService;
     private final ChatRoomRepository chatRoomRepository;
+    private final CloudinaryService cloudinaryService;
 
     public Message sendMessage(MessageReq message) {
         Optional<ChatRoom> optionalChatRoom = chatRoomService.getChatRoom(message.getChatRoomName());
@@ -37,7 +43,13 @@ public class ChatMessageService {
             return null;
         }
     }
+    public ChatImageResponse uploadChatImageUrl(MultipartFile file) {
+        Map<?, ?> uploadChatImage = cloudinaryService.uploadImage(file, "chat_image");
+        ChatImageResponse chatImageResponse = new ChatImageResponse();
+        chatImageResponse.setImageUrl((String) uploadChatImage.get("url"));
+        return chatImageResponse;
 
+    }
 
     public List<Message> findChatRoom(String chatRoomName) {
         synchronized (this) {
