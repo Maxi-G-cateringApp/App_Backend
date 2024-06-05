@@ -56,7 +56,7 @@ public class SalesReportServiceImpl implements SalesReportService {
     public Double calculateTotalSales(List<Order>orders){
         double totalPrice = 0;
         for(Order order: orders){
-            totalPrice += order.getTotalAmount();
+            totalPrice += order.getTotalAmount() == null ? 0.0: order.getTotalAmount();
         }
         return totalPrice;
     }
@@ -66,11 +66,11 @@ public class SalesReportServiceImpl implements SalesReportService {
 
         List<Order> orderListForOneDay = orderRepository.findByOrderDateBetween(yesterday,today)
                 .stream().filter(order -> order.getStatus()!= Status.CANCELLED).toList();
-        System.out.println(orderListForOneDay);
 
         Map<LocalDate,Long> dailyOrderCount = orderListForOneDay.stream()
                 .collect(Collectors.groupingBy(Order::getOrderDate,Collectors.counting()));
-        Double totalRevenue = orderListForOneDay.stream().mapToDouble(Order::getTotalAmount).sum();
+        Double totalRevenue = orderListForOneDay.stream().mapToDouble(
+                order -> order.getTotalAmount() == null ? 0.0: order.getTotalAmount()).sum();
         Integer totalCount = orderListForOneDay.size();
 
         return getSalesDto(yesterday, today, dailyOrderCount, totalRevenue, totalCount);
@@ -94,7 +94,8 @@ public class SalesReportServiceImpl implements SalesReportService {
                 .stream().filter(order -> order.getStatus()!= Status.CANCELLED && order.getStatus()!=Status.PENDING).toList();
         Map<LocalDate,Long> dailyOrderCount = orderListForOneWeek.stream()
                 .collect(Collectors.groupingBy(Order::getOrderDate,Collectors.counting()));
-        Double totalRevenue = orderListForOneWeek.stream().mapToDouble(Order::getTotalAmount).sum();
+        Double totalRevenue = orderListForOneWeek.stream().mapToDouble(
+                order -> order.getTotalAmount() == null ? 0.0: order.getTotalAmount()).sum();
         Integer totalCount = orderListForOneWeek.size();
         return getSalesDto(oneWeekAgo, today, dailyOrderCount, totalRevenue, totalCount);
     }
@@ -105,7 +106,8 @@ public class SalesReportServiceImpl implements SalesReportService {
                 .stream().filter(order -> order.getStatus()!= Status.CANCELLED && order.getStatus()!=Status.PENDING).toList();
         Map<LocalDate,Long> dailyOrderCount = orderListForOneMonth.stream()
                 .collect(Collectors.groupingBy(Order::getOrderDate,Collectors.counting()));
-        Double totalRevenue = orderListForOneMonth.stream().mapToDouble(Order::getTotalAmount).sum();
+        Double totalRevenue = orderListForOneMonth.stream().mapToDouble(
+                order -> order.getTotalAmount() == null ? 0.0: order.getTotalAmount()).sum();
         Integer totalCount = orderListForOneMonth.size();
         return getSalesDto(oneMonthAgo, today, dailyOrderCount, totalRevenue, totalCount);
     }
@@ -116,7 +118,8 @@ public class SalesReportServiceImpl implements SalesReportService {
                 .stream().filter(order -> order.getStatus()!= Status.CANCELLED && order.getStatus()!=Status.PENDING).toList();
         Map<LocalDate,Long> dailyOrderCount = orderListForOneYear.stream()
                 .collect(Collectors.groupingBy(Order::getOrderDate,Collectors.counting()));
-        Double totalRevenue = orderListForOneYear.stream().mapToDouble(Order::getTotalAmount).sum();
+        Double totalRevenue = orderListForOneYear.stream().mapToDouble(
+                order -> order.getTotalAmount() == null ? 0.0: order.getTotalAmount()).sum();
         Integer totalCount = orderListForOneYear.size();
         return getSalesDto(oneYearAgo, today, dailyOrderCount, totalRevenue, totalCount);
     }
@@ -131,7 +134,7 @@ public class SalesReportServiceImpl implements SalesReportService {
         for (Order order : totalSales){
             LocalDate orderDate = order.getOrderDate();
             String monthYear = orderDate.format(monthFormatter);
-            double totalPrice = order.getTotalAmount();
+            double totalPrice = order.getTotalAmount() == null ? 0.0: order.getTotalAmount();
             monthlySales.put(monthYear,monthlySales.getOrDefault(monthYear, 0.0)+totalPrice);
         }
         List<String> months = new ArrayList<>(monthlySales.keySet());
