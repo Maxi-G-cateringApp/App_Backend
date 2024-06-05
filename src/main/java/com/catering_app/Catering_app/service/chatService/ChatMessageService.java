@@ -87,4 +87,16 @@ public class ChatMessageService {
             messageRepository.save(message);
 
     }
+
+    public ChatImageResponse viewContentByMessageId(Long id) {
+        Optional<Message> optionalMessage = messageRepository.findById(id);
+        if (optionalMessage.isPresent()){
+            Message message = optionalMessage.get();
+            ChatImageResponse chatImageResponse = new ChatImageResponse();
+            chatImageResponse.setImageUrl(message.getContent());
+            return chatImageResponse;
+        }else {
+            throw new EntityNotFoundException();
+        }
+    }
 }

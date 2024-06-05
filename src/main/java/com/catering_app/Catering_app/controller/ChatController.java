@@ -9,6 +9,7 @@ import com.catering_app.Catering_app.service.chatService.ChatRoomService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 public class ChatController {
@@ -67,6 +69,12 @@ public class ChatController {
     public List<ChatRoomDTO> getChatRoomByAdmin() {
         return chatRoomService.getAllChatRooms();
     }
+
+    @GetMapping("/view/image")
+    public ResponseEntity<ChatImageResponse> viewImage(@RequestParam Long id){
+        return ResponseEntity.ok(chatMessageService.viewContentByMessageId(id));
+    }
+
 
 }
 
